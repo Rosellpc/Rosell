@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VortexCanvas from '../../components/visual/VortexCanvas.astro';
+---
+<BaseLayout title="Estudio de flujo — Laboratorio de Rosell" description="Exploración visual monocromática inspirada en la dinámica de fluidos y Navier–Stokes.">
+  <section class="lab-page wrap" aria-labelledby="lab-title">
+    <a class="text-link" href="/">← Volver al portafolio</a>
+    <div class="section-heading"><div><p class="eyebrow">Laboratorio / Estudio 01</p><h1 id="lab-title">Geometría del flujo.</h1></div><p>Un espacio para explorar<br />movimiento, luz y materia.</p></div>
+    <VortexCanvas mode="lab" />
+    <div class="lab-note"><p>Arrastra para orbitar. Usa los controles para cambiar el flujo y el punto de vista.</p><p>Una exploración visual inspirada en Navier–Stokes. El movimiento utiliza un campo de velocidades procedural; no es una simulación física de sus ecuaciones.</p></div>
+  </section>
+</BaseLayout>

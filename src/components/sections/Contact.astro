@@ -1,0 +1,12 @@
+---
+import { profile } from '../../data/profile';
+---
+<section id="contacto" class="section wrap contact" aria-labelledby="contact-title">
+  <div class="glass contact-panel">
+    <p class="eyebrow">04 / Siguiente paso</p>
+    <h2 id="contact-title">Algo bueno empieza<br />con una conversación.</h2>
+    <p>Una idea, un reto técnico o un producto por construir.<br />Démosle forma.</p>
+    <a class="button button-primary" href={`mailto:${profile.email}`}>Escríbeme <span aria-hidden="true">↗</span></a>
+    <div class="contact-links"><a href={`mailto:${profile.email}`}>{profile.email}</a>{profile.socials.map(social => <a href={social.url} target="_blank" rel="noopener noreferrer">{social.label} ↗</a>)}</div>
+  </div>
+</section>

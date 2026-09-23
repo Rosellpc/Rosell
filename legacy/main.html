@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navier-Stoke</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="webgl-container"></div>
+    <div class="vignette"></div>
+
+    <div class="header-dashboard">
+        <div class="brand-section">
+            <div class="brand-tag">Navier–Stokes Estudio 03</div>
+            <h1 class="main-title">Geometría del <i>Vórtice 3D.</i></h1>
+        </div>
+        <div class="metrics-bar">
+            <div class="metric-item">
+                <span class="metric-label">Partículas</span>
+                <span class="metric-value" id="val-particles">40,000</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">Escala Temporal Δt</span>
+                <span class="metric-value" id="val-dt">0.016 s</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">FPS</span>
+                <span class="metric-value" id="val-fps">60</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="editorial-box">
+        <div class="editorial-title">
+            <span>Fluido Tridimensional</span>
+            <span style="color: var(--accent-cyan); font-size: 10px;">VOLUMÉTRICO</span>
+        </div>
+        <div class="editorial-desc">
+            Estructura helicoidal dispersa en las tres dimensiones del espacio. El flujo no se limita a un plano, sino que ocupa un volumen elipsoidal abombado antes de converger circularmente y ser expelido violentamente por los chorros polares.
+        </div>
+    </div>
+
+    <div class="bottom-toolbar">
+        <button class="btn" id="btn-play-pause" onclick="togglePlayPause()">
+            <span id="icon-pause">⏸ Pause</span>
+        </button>
+        <button class="btn active" id="cam-persp" onclick="setCameraView('persp')">Perspectiva</button>
+        <button class="btn" id="cam-top" onclick="setCameraView('top')">Vista Superior</button>
+        <button class="btn" id="cam-center" onclick="setCameraView('center')">Vista Núcleo</button>
+        <button class="btn" onclick="toggleSettingsDrawer()">⚙ Ajustes</button>
+    </div>
+
+    <div class="settings-drawer" id="settings-drawer">
+        <div class="drawer-header">
+            <div class="drawer-title">Parámetros de Física</div>
+            <button class="close-btn" onclick="toggleSettingsDrawer()">×</button>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Densidad (Partículas)</span>
+                <span class="control-value" id="disp-density">40,000</span>
+            </div>
+            <input type="range" id="slider-density" min="10000" max="100000" step="5000" value="40000" oninput="updateDensity(this.value)">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Viscosidad del Fluido</span>
+                <span class="control-value" id="disp-viscosity">0.12</span>
+            </div>
+            <input type="range" id="slider-viscosity" min="0.01" max="0.5" step="0.01" value="0.12" oninput="updateViscosity(this.value)">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Intensidad de Vorticidad</span>
+                <span class="control-value" id="disp-vorticity">2.50</span>
+            </div>
+            <input type="range" id="slider-vorticity" min="0.5" max="6.0" step="0.1" value="2.5" oninput="updateVorticity(this.value)">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Velocidad Temporal (dt)</span>
+                <span class="control-value" id="disp-dt">1.0x</span>
+            </div>
+            <input type="range" id="slider-dt" min="0.1" max="3.0" step="0.1" value="1.0" oninput="updateTimeScale(this.value)">
+        </div>
+
+        <div class="drawer-header" style="padding-top: 10px;">
+            <div class="drawer-title">Ajustes Visuales</div>
+        </div>
+
+        <div class="control-group">
+            <div class="control-label">
+                <span>Luminancia / Neón</span>
+                <span class="control-value" id="disp-luminance">1.8</span>
+            </div>
+            <input type="range" id="slider-luminance" min="0.5" max="4.0" step="0.1" value="1.8" oninput="updateLuminance(this.value)">
+        </div>
+
+        <div class="control-group">
+            <div class="control-label"><span>Tema de Color</span></div>
+            <div class="theme-selector">
+                <button class="btn theme-btn active" id="theme-dual" onclick="setTheme(0)">Dual Neón</button>
+                <button class="btn theme-btn" id="theme-mono" onclick="setTheme(1)">Monocromo</button>
+                <button class="btn theme-btn" id="theme-fire" onclick="setTheme(2)">Fuego/Ámbar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <script src="./main.js"></script>
+
+  
+  
+</body>
+</html>

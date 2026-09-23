@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../../assets/profile/foto-profile.png';
+import GlassCard from '../ui/GlassCard.astro';
+---
+<section id="sobre-mi" class="section wrap" aria-labelledby="about-title">
+  <div class="section-heading"><div><p class="eyebrow">02 / Sobre mí</p><h2 id="about-title">Código con propósito.</h2></div></div>
+  <div class="about-grid">
+    <GlassCard class="portrait-card">
+      <Image src={portrait} alt="Retrato de Rosell Puma" width={400} loading="lazy" />
+      <div><h3>Rosell Puma</h3><p>Full Stack Developer</p></div>
+    </GlassCard>
+    <GlassCard class="philosophy-card">
+      <p class="eyebrow">Mi forma de trabajar</p>
+      <h3>Entender primero.<br />Construir con intención.</h3>
+      <p>Primero entiendo el problema y a quién va dirigido el producto. Después organizo la solución en partes claras, construyo una primera versión y la mejoro a partir de pruebas y observaciones.</p>
+      <p>Busco que cada decisión técnica tenga un propósito visible en la experiencia final.</p>
+      <div class="philosophy-foot"><span>Atención al detalle</span><span>Comunicación clara</span></div>
+    </GlassCard>
+  </div>
+</section>

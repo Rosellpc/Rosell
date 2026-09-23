@@ -1,0 +1,20 @@
+---
+import VortexCanvas from '../visual/VortexCanvas.astro';
+import { profile } from '../../data/profile';
+---
+<section class="hero wrap" aria-labelledby="hero-title">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>{profile.role}</p>
+    <h1 id="hero-title">Ideas claras.<br /><span>Software que fluye.</span></h1>
+    <p class="hero-description">Soy Rosell. Conecto interfaces, lógica y datos para construir experiencias digitales cuidadas de principio a fin.</p>
+    <div class="actions">
+      <a class="button button-primary" href="#proyectos">Ver proyectos <span aria-hidden="true">↗</span></a>
+      <a class="button button-secondary" href="#contacto">Hablemos</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <VortexCanvas mode="hero" />
+    <div class="visual-caption"><span>Estudio 01 — Flujo</span><a href="/lab/vortex/" aria-label="Explorar el laboratorio de vórtice">Explorar <span aria-hidden="true">↗</span></a></div>
+  </div>
+  <div class="hero-foot"><span>{profile.location} <span aria-hidden="true">/</span> Trabajo remoto</span><a href="#proyectos">Desplázate para descubrir <span aria-hidden="true">↓</span></a></div>
+</section>

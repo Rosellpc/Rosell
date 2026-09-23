@@ -1,0 +1,7 @@
+---
+import { skills } from '../../data/profile';
+---
+<section id="stack" class="section wrap" aria-labelledby="stack-title">
+  <div class="section-heading"><div><p class="eyebrow">03 / Herramientas</p><h2 id="stack-title">Una visión completa.</h2></div><p>De lo que ves<br />a lo que lo hace posible.</p></div>
+  <div class="stack-grid">{skills.map((group, index) => <article class="stack-column"><span class="stack-number">0{index + 1}</span><h3>{group.title}</h3><p>{group.description}</p><ul class="tags">{group.items.map(item => <li>{item}</li>)}</ul></article>)}</div>
+</section>

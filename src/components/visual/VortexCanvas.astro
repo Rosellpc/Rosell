@@ -1,0 +1,69 @@
+---
+import type { VortexMode } from '../../graphics/vortex/config';
+interface Props { mode?: VortexMode; }
+const { mode = 'hero' } = Astro.props;
+const lab = mode === 'lab';
+---
+<vortex-scene data-mode={mode} data-state="idle" class:list={['vortex', { 'vortex-lab': lab }]}>
+  <div class="scene-surface">
+    <div class="scene-fallback" aria-hidden="true"><div class="glass-loop loop-one"></div><div class="glass-loop loop-two"></div><div class="glass-loop loop-three"></div></div>
+    <div class="canvas-host" aria-hidden="true"></div>
+    <div class="scene-top"><span class="scene-label">{lab ? 'Navier–Stokes / Exploración visual' : 'Materia en movimiento'}</span><button data-pause type="button" disabled aria-pressed="false" aria-label="Pausar animación">Pausar <span aria-hidden="true">Ⅱ</span></button></div>
+    <p class="scene-status" role="status" data-status>Composición estática</p>
+  </div>
+  {lab && <div class="lab-controls glass">
+    <div class="camera-controls" role="group" aria-label="Punto de vista">
+      <button type="button" data-view="perspective" aria-pressed="true" disabled>Perspectiva</button>
+      <button type="button" data-view="top" aria-pressed="false" disabled>Superior</button>
+      <button type="button" data-view="core" aria-pressed="false" disabled>Núcleo</button>
+    </div>
+    <details>
+      <summary>Parámetros del flujo <span aria-hidden="true">+</span></summary>
+      <div class="parameter-grid">
+        <label>Partículas <output data-output="density">10.000</output><input data-param="density" type="range" min="1000" max="20000" step="1000" value="10000" disabled /></label>
+        <label>Viscosidad <output data-output="viscosity">0.12</output><input data-param="viscosity" type="range" min="0.01" max="0.5" step="0.01" value="0.12" disabled /></label>
+        <label>Vorticidad <output data-output="vorticity">2.5</output><input data-param="vorticity" type="range" min="0.5" max="6" step="0.1" value="2.5" disabled /></label>
+        <label>Velocidad <output data-output="timeScale">0.4</output><input data-param="timeScale" type="range" min="0.1" max="1.5" step="0.1" value="0.4" disabled /></label>
+        <label>Luz de partículas <output data-output="luminance">0.7</output><input data-param="luminance" type="range" min="0.1" max="1.2" step="0.1" value="0.7" disabled /></label>
+      </div>
+    </details>
+  </div>}
+</vortex-scene>
+<script>
+  import '../../scripts/vortex-element';
+</script>
+<style>
+  .vortex { display: block; width: 100%; }
+  .scene-surface { position: relative; height: 440px; overflow: hidden; border-radius: 24px; }
+  .canvas-host, .scene-fallback { position: absolute; inset: 0; }
+  .canvas-host { opacity: 0; transition: opacity 1s; }
+  .canvas-host :global(canvas) { display: block; width: 100%; height: 100%; }
+  .vortex[data-state="ready"] .canvas-host { opacity: 1; }
+  .vortex[data-state="ready"] .scene-fallback { visibility: hidden; }
+  .vortex:not(.vortex-lab) .canvas-host { mask-image: radial-gradient(ellipse, #000 30%, transparent 73%); }
+  .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse, #ffffff04, transparent 65%); }
+  .glass-loop { position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%; border: 18px solid #ffffff08; box-shadow: inset 3px 1px 3px #ffffff7a, inset -7px -3px 12px #000000b0, 2px 2px 2px #ffffff30, -3px -2px 6px #ffffff09; }
+  .loop-one { transform: rotate(-30deg) scaleY(.53); }
+  .loop-two { transform: rotate(85deg) scaleY(.53); }
+  .loop-three { transform: rotate(30deg) scaleY(.53); }
+  .scene-top { position: absolute; top: 18px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 2; }
+  .scene-label { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; font-size: .51rem; color: var(--muted); }
+  [data-pause] { color: #bfbfbb; background: #20202080; border: 1px solid var(--line); border-radius: 20px; font-size: .58rem; padding: 7px 11px; min-height: 32px; }
+  [data-pause] span { padding-left: 8px; }
+  .scene-status { position: absolute; bottom: 12px; left: 20px; font-size: .57rem; color: var(--muted); }
+  .vortex[data-state="ready"] .scene-status { opacity: 0; }
+  .vortex-lab .scene-surface { height: min(62vh, 620px); min-height: 330px; border: 1px solid var(--line); border-bottom: 0; border-radius: 24px 24px 0 0; }
+  .lab-controls { border-radius: 0 0 24px 24px; padding: 18px 24px; }
+  .camera-controls { display: flex; flex-wrap: wrap; gap: 8px; }
+  .camera-controls button { padding: 10px 16px; font-size: .7rem; color: var(--muted); border: 1px solid transparent; border-radius: 22px; background: transparent; }
+  .camera-controls button[aria-pressed="true"] { background: #ffffff09; border-color: #ffffff20; color: var(--text); }
+  details { margin-top: 18px; border-top: 1px solid var(--line); }
+  summary { cursor: pointer; padding-top: 18px; font-size: .73rem; color: #c3c3c0; }
+  summary span { float: right; }
+  .parameter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; padding-block: 24px 8px; }
+  label { display: grid; grid-template-columns: 1fr auto; gap: 12px; font-size: .68rem; color: var(--muted); }
+  output { color: var(--text); font-family: var(--mono); }
+  input { grid-column: 1 / -1; width: 100%; accent-color: #ccc; min-height: 24px; margin: 0; }
+  @media (max-width: 900px) { .scene-surface { height: 350px; } }
+  @media (max-width: 640px) { .scene-surface { height: 320px; } .parameter-grid { grid-template-columns: 1fr; gap: 20px; } .lab-controls { padding: 18px; } .scene-label { max-width: 180px; } .scene-top { left: 14px; right: 14px; } }
+</style>

@@ -1,0 +1,14 @@
+---
+import { profile } from '../../data/profile';
+const inLab = Astro.url.pathname.startsWith('/lab');
+---
+<header class="site-header">
+  <nav class="glass navigation" aria-label="Navegación principal">
+    <a class="brand" href="/" aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true">.</span></a>
+    <div class="nav-links">
+      <a href="/#proyectos">Proyectos</a>
+      <a href="/lab/vortex/" aria-current={inLab ? 'page' : undefined}>Laboratorio</a>
+      <a class="nav-contact" href="/#contacto">Hablemos <span aria-hidden="true">↗</span></a>
+    </div>
+  </nav>
+</header>

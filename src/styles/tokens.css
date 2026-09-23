@@ -1,0 +1,14 @@
+:root {
+  color-scheme: dark;
+  --bg: #111111;
+  --surface: #191919;
+  --text: #eeeeec;
+  --muted: #aaa9a6;
+  --subtle: #777774;
+  --line: rgb(255 255 255 / 12%);
+  --glass: rgb(255 255 255 / 3%);
+  --radius: 28px;
+  --font: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: 'Cascadia Code', Consolas, monospace;
+  --width: 1140px;
+}
