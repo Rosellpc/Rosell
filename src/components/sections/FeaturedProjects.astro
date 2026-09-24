@@ -1,9 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 import ProjectCard from '../ui/ProjectCard.astro';
+import ProjectGrid from './ProjectGrid.astro';
+import { projectGallery } from '../../data/project-gallery';
 const projects = (await getCollection('projects', ({ data }) => data.featured)).sort((a,b) => a.data.order - b.data.order);
 ---
 <section id="proyectos" class="section wrap" aria-labelledby="projects-title">
   <div class="section-heading"><div><p class="eyebrow">01 / Trabajo seleccionado</p><h2 id="projects-title">De la idea al sistema.</h2></div><p>Diseño, desarrollo y criterio técnico<br />en cada capa del producto.</p></div>
   {projects.map((project, index) => <ProjectCard project={project} index={index} />)}
+  <ProjectGrid projects={projectGallery} />
 </section>

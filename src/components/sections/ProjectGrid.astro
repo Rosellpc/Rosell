@@ -1,0 +1,18 @@
+---
+import ProjectTile from '../ui/ProjectTile.astro';
+import type { GalleryProject } from '../../data/project-gallery';
+interface Props {
+  projects: GalleryProject[];
+}
+const { projects } = Astro.props;
+---
+<div class="project-grid" role="list" aria-label="Más proyectos">
+  {projects.map(project => <div class="project-grid-item" role="listitem"><ProjectTile {...project} /></div>)}
+</div>
+
+<style>
+  .project-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 28px; }
+  .project-grid-item { display: grid; min-width: 0; }
+  @media (max-width: 900px) { .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .project-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; } }
+</style>

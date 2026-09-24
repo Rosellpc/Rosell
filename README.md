@@ -32,6 +32,7 @@ Las pruebas usan Chrome instalado localmente. Alternativamente, instalar Chromiu
 - `src/styles/tokens.css`: paleta, tipografía, espaciado base y bordes.
 - `src/styles/global.css`: composición adaptable y tratamiento de vidrio.
 - `src/data/profile.ts`: nombre, contacto, redes y habilidades.
+- `src/data/project-gallery.ts`: las seis tarjetas de demos públicas bajo el trabajo destacado.
 - `src/content/projects/`: proyectos en Markdown.
 - `src/content.config.ts`: esquema validado de proyectos.
 - `src/graphics/vortex/`: motor Three.js, configuración, partículas y shaders.
@@ -43,6 +44,8 @@ Las pruebas usan Chrome instalado localmente. Alternativamente, instalar Chromiu
 ## Editar contenido
 
 Crear un archivo Markdown en `src/content/projects/` con los campos del proyecto de ejemplo. El nombre del archivo define su ruta. `featured: true` lo muestra en el inicio. `repository` y `demo` son URLs opcionales: sólo se muestran si están definidas.
+
+La galería bajo el destacado se edita en `src/data/project-gallery.ts`: `title`, `href`, `technologies` y `preview` (opcional). Las primeras dos tarjetas usan las demos Airbnb Fancy y Boleli con capturas locales en `public/projects/`. Las cuatro restantes son espacios provisionales y alternan las mismas dos URLs. Sustituirlas por sus destinos definitivos cuando estén disponibles. El stack provisional de las seis tarjetas es React, TypeScript, Vite, React Router, CSS y ESLint; se puede modificar por proyecto. Toda la tarjeta es un enlace que abre otra pestaña, también accesible mediante teclado; la rejilla tiene 3, 2 o 1 columnas según el ancho de pantalla.
 
 El texto de My Business FastAPI procede de la landing proporcionada; no se han añadido cifras de resultados ni enlaces inventados. Antes de publicar:
 
