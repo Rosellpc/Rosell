@@ -1,10 +1,14 @@
+// Dirección única para el destinatario de todos los enlaces de contacto.
+const email = 'rossellpc@gmail.com';
+const emailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}`;
+
 export const profile = {
   name: 'Rosell',
   brand: 'rosellpc',
   role: 'Desarrollador Full Stack',
   location: 'Cusco, Perú',
-  // Dirección conservada de la landing original. Confirmar antes de publicar.
-  email: 'rossellpc@gmial.com',
+  email,
+  emailComposeUrl,
   description: 'Desarrollador Full Stack. Interfaces cuidadas, APIs y sistemas con una base técnica sólida.',
   // Añadir las URLs personales verificadas; no mostrar enlaces genéricos.
   socials: [
@@ -14,7 +18,7 @@ export const profile = {
     },
     {
       label: "Email",
-      url: "mailto:rossellpc@gmial.com"
+      url: emailComposeUrl
     },
     {
       label: "LinkedIn",

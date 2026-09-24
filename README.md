@@ -32,6 +32,7 @@ Las pruebas usan Chrome instalado localmente. Alternativamente, instalar Chromiu
 - `src/styles/tokens.css`: paleta, tipografía, espaciado base y bordes.
 - `src/styles/global.css`: composición adaptable y tratamiento de vidrio.
 - `src/data/profile.ts`: nombre, contacto, redes y habilidades.
+- Contacto: «Escríbeme», «Email» y la dirección visible abren Gmail web en otra pestaña con el destinatario predefinido. «Usar mi aplicación de correo» mantiene la alternativa `mailto:`. La dirección se define una sola vez en `src/data/profile.ts`.
 - `src/data/project-gallery.ts`: las seis tarjetas de demos públicas bajo el trabajo destacado.
 - `src/content/projects/`: proyectos en Markdown.
 - `src/content.config.ts`: esquema validado de proyectos.
