@@ -42,4 +42,3 @@ La configuración de desarrollo actual utiliza PostgreSQL alojado en Supabase. E
 
 El siguiente horizonte es su lanzamiento como **SaaS**, para ofrecer la plataforma como un servicio alojado y permitir que distintos restaurantes accedan a ella. Esta modalidad está prevista, aún no disponible comercialmente.
 
-La integración de pagos con Culqi está implementada y pendiente de validación de extremo a extremo con el proveedor. Mientras tanto, el flujo de compra se presenta en modalidad de demostración.
