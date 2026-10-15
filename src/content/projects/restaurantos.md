@@ -22,6 +22,12 @@ Desarrollo e integración del frontend y el backend, modelado de datos y diseño
 
 El módulo de Costeo reúne insumos, inventario de referencia, recetas versionadas y fichas técnicas. Incorpora históricos de precios, importación y exportación de datos, cálculo de costos por porción y simulación del precio de venta y margen teórico.
 
+## Una visión de la operación
+
+El dashboard reúne pedidos, producción y existencias, con filtros por período, evolución diaria y productos más solicitados. Los importes de esta captura corresponden a pedidos de demostración y no representan cobros reales.
+
+<a href="/projects/restaurantos-dashboard.png" aria-label="Ver captura del dashboard en tamaño completo"><img class="project-detail-preview" src="/projects/restaurantos-dashboard.png" alt="Dashboard de RestaurantOS con indicadores de pedidos, evolución diaria y productos más solicitados" width="3840" height="2160" loading="lazy" decoding="async" /></a>
+
 ## Decisiones técnicas
 
 - **Control de acceso:** sesiones de Django y permisos por rol para separar administración, Cocina y Barra.

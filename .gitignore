@@ -9,3 +9,6 @@ artifacts/
 .env.*
 !.env.example
 *.log
+
+# Folders
+**/Portafolio/
