@@ -3,7 +3,7 @@ title: My Business FastAPI
 description: Gestión de clientes, planes y transacciones, con autenticación, permisos y una interfaz administrativa.
 category: Backend · Aplicación de negocio
 technologies: [Python, FastAPI, Streamlit, AWS]
-featured: true
+featured: false
 order: 1
 ---
 

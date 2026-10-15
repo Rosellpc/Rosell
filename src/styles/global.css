@@ -163,3 +163,7 @@ ul { padding: 0; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.project-preview { display: flex; align-items: center; min-width: 0; padding: 18px; background: #1e2023; }
+.project-preview img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; }
+.project-detail-preview { display: block; width: 100%; height: auto; margin: 32px 0; border: 1px solid var(--line); border-radius: 16px; }

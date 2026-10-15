@@ -5,14 +5,16 @@ interface Props { project: CollectionEntry<'projects'>; index: number; }
 const { project, index } = Astro.props;
 ---
 <GlassCard class="project-card">
-  <div class="project-art" aria-hidden="true">
+  {project.data.preview ? <a class="project-preview" href={`/proyectos/${project.id}/`} aria-label={`Explorar ${project.data.title}`}>
+    <img src={project.data.preview} alt={project.data.previewAlt ?? project.data.title} width="3840" height="2160" loading="lazy" />
+  </a> : <div class="project-art" aria-hidden="true">
     <div class="architecture-node">Interfaz <span>{project.data.architecture[0]}</span></div>
     <div class="architecture-line"></div>
     <div class="architecture-node main-node">API <span>{project.data.architecture[1]}</span></div>
     <div class="architecture-line"></div>
     <div class="architecture-node">{project.id === 'restaurantos' ? 'Datos' : 'Acceso'} <span>{project.data.architecture[2]}</span></div>
     <span class="art-caption">Sistema / {String(index + 1).padStart(2, '0')}</span>
-  </div>
+  </div>}
   <div class="project-copy">
     <p class="eyebrow">{project.data.category}</p>
     <h3><a href={`/proyectos/${project.id}/`}>{project.data.title}<span class="project-arrow" aria-hidden="true">↗</span></a></h3>

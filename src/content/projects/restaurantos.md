@@ -6,6 +6,8 @@ technologies: [React, TypeScript, Django REST, PostgreSQL, Supabase]
 featured: true
 order: 0
 architecture: [React, Django REST, PostgreSQL]
+preview: /projects/restaurantos-costing.png
+previewAlt: Panel de Costeo de RestaurantOS con insumos, recetas, costos y categorías
 ---
 
 ## Del pedido a la operación
@@ -34,4 +36,10 @@ React, TypeScript y Vite para la interfaz; Django REST Framework para las reglas
 
 ## Estado del proyecto
 
-MVP funcional de demostración, actualmente en pausa. La integración con Culqi está implementada, pero sigue pendiente la validación de extremo a extremo y la habilitación del proveedor. Los pagos de demostración y las métricas asociadas no representan cobros reales. No se presenta como un sistema en producción comercial.
+RestaurantOS funciona actualmente en un entorno local, con una orientación de despliegue **on-premise**: ejecutar la aplicación en la infraestructura del restaurante y acceder a sus módulos desde la red del establecimiento.
+
+La configuración de desarrollo actual utiliza PostgreSQL alojado en Supabase. El despliegue con la base de datos también instalada en el local forma parte de la evolución prevista; no se presenta todavía como una solución completamente autónoma ni sin conexión.
+
+El siguiente horizonte es su lanzamiento como **SaaS**, para ofrecer la plataforma como un servicio alojado y permitir que distintos restaurantes accedan a ella. Esta modalidad está prevista, aún no disponible comercialmente.
+
+La integración de pagos con Culqi está implementada y pendiente de validación de extremo a extremo con el proveedor. Mientras tanto, el flujo de compra se presenta en modalidad de demostración.
