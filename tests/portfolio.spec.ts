@@ -9,7 +9,7 @@ test('navegación, contenido y dimensiones adaptables', async ({ page }) => {
   await expect(page.locator('vortex-scene')).toHaveAttribute('data-state', 'static');
   await expect(page.locator('canvas')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
-  await page.getByRole('link', { name: 'Explorar proyecto' }).click();
+  await page.locator('.project-card').filter({ has: page.getByRole('heading', { name: 'My Business FastAPI' }) }).getByRole('link', { name: 'Explorar proyecto' }).click();
   await expect(page).toHaveURL(/\/proyectos\/my-business-fastapi\//);
   await expect(page.getByRole('heading', { name: 'Autenticación y permisos' })).toBeVisible();
   await page.getByRole('link', { name: 'Laboratorio', exact: true }).click();
@@ -51,7 +51,7 @@ test('contenido accesible sin JavaScript', async ({ browser, baseURL }) => {
   const page = await context.newPage();
   await page.goto(baseURL!);
   await expect(page.getByRole('heading', { name: 'De la idea al sistema.' })).toBeVisible();
-  await page.getByRole('link', { name: 'Explorar proyecto' }).click();
+  await page.locator('.project-card').filter({ has: page.getByRole('heading', { name: 'My Business FastAPI' }) }).getByRole('link', { name: 'Explorar proyecto' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('My Business FastAPI');
   await context.close();
 });

@@ -11,6 +11,7 @@ const projects = defineCollection({
     technologies: z.array(z.string()),
     featured: z.boolean().default(false),
     order: z.number().default(0),
+    architecture: z.array(z.string()).length(3).default(['Streamlit', 'FastAPI', 'JWT · RBAC']),
     repository: z.url().optional(),
     demo: z.url().optional(),
   }),
