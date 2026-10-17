@@ -1,19 +1,47 @@
 ---
-import { profile } from '../../data/profile';
+import { profile } from "../../data/profile";
 ---
-<section id="contacto" class="section wrap contact" aria-labelledby="contact-title">
+
+<section
+  id="contacto"
+  class="section wrap contact"
+  aria-labelledby="contact-title"
+>
   <div class="glass contact-panel">
     <p class="eyebrow">04 / Siguiente paso</p>
     <h2 id="contact-title">Algo bueno empieza<br />con una conversación.</h2>
-    <p>Busco sumarme a un equipo de desarrollo.<br />Si mi perfil encaja, conversemos.</p>
-    <a class="button button-primary" href={profile.emailComposeUrl} target="_blank" rel="noopener noreferrer" aria-describedby="contact-mail-hint">Escríbeme <span aria-hidden="true">↗</span></a>
-    
+    <p>Busco sumarme a nuevos retos.</p>
+    <a
+      class="button button-primary"
+      href={profile.emailComposeUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-describedby="contact-mail-hint"
+      >Escríbeme <span aria-hidden="true">↗</span></a
+    >
+
     <div class="contact-links">
-      {profile.socials.map(social => <a href={social.url} target="_blank" rel="noopener noreferrer" aria-describedby={social.label === 'Email' ? 'contact-mail-hint' : undefined}>{social.label} ↗</a>)}
+      {
+        profile.socials.map((social) => (
+          <a
+            href={social.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-describedby={
+              social.label === "Email" ? "contact-mail-hint" : undefined
+            }
+          >
+            {social.label} ↗
+          </a>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
-  .contact-panel .contact-mail-hint { margin: 12px 0 0; font-size: .72rem; }
+  .contact-panel .contact-mail-hint {
+    margin: 12px 0 0;
+    font-size: 0.72rem;
+  }
 </style>

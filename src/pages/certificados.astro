@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { certificateGroups } from '../data/certificates';
+const total = certificateGroups.reduce((sum, group) => sum + group.items.length, 0);
+---
+<BaseLayout title="Formación y certificados — Rosell" description="Certificados de formación de Rosell en desarrollo web, inglés, marketing y negocio digital.">
+  <div class="wrap certificates-page">
+    <a class="text-link" href="/#sobre-mi">← Volver a sobre mí</a>
+    <header class="certificates-header">
+      <p class="eyebrow">Formación continua / {total} certificados</p>
+      <h1>Aprender para construir.</h1>
+      <p>Desarrollo web como base. Inglés y negocio digital para ampliar mi perspectiva.</p>
+    </header>
+    <nav class="certificate-nav" aria-label="Áreas de formación">
+      {certificateGroups.map(group => <a class="button button-secondary" href={`#${group.id}`}>{group.title} <span aria-hidden="true">↓</span></a>)}
+    </nav>
+    {certificateGroups.map(group => <section id={group.id} class="certificate-section" aria-labelledby={`${group.id}-title`}>
+      <div class="group-heading"><h2 id={`${group.id}-title`}>{group.title}</h2><span>{group.items.length} certificados</span></div>
+      <ul class="certificate-grid">
+        {group.items.map(certificate => <li class="glass certificate-card">
+          <p class="certificate-meta">{certificate.detail}</p>
+          <h3>{certificate.title}</h3>
+          <a class="text-link" href={`/certificados/${certificate.file}.pdf`} target="_blank" rel="noopener noreferrer" aria-label={`Ver certificado de ${certificate.title} (PDF, nueva pestaña)`}>Ver certificado <span class="pdf-label">PDF ↗</span></a>
+        </li>)}
+      </ul>
+    </section>)}
+  </div>
+</BaseLayout>
+
+<style>
+  .certificates-page { padding-top: 150px; padding-bottom: 90px; }
+  .certificates-header { max-width: 760px; margin-top: 40px; }
+  h1 { font-size: clamp(2.25rem, 5vw, 4rem); line-height: 1.12; margin: 18px 0; }
+  .certificates-header > p:last-child { color: var(--muted); line-height: 1.8; }
+  .certificate-nav { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0 56px; }
+  .certificate-nav .button { font-size: .78rem; }
+  .certificate-section { margin-top: 48px; scroll-margin-top: 120px; }
+  .group-heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 20px; }
+  h2 { font-size: clamp(1.4rem, 3vw, 2rem); }
+  .group-heading > span, .certificate-meta { color: var(--muted); font-size: .75rem; line-height: 1.7; }
+  .certificate-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .certificate-card { display: flex; flex-direction: column; padding: 28px; min-width: 0; }
+  h3 { font-size: 1.12rem; line-height: 1.5; margin: 14px 0 24px; overflow-wrap: anywhere; }
+  .certificate-card .text-link { margin-top: auto; justify-content: space-between; flex-wrap: wrap; }
+  .pdf-label { font-family: var(--mono); font-size: .65rem; color: var(--muted); }
+  @media (max-width: 900px) { .certificate-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .certificates-page { padding-top: 115px; padding-bottom: 60px; }
+    .certificate-grid { grid-template-columns: minmax(0, 1fr); }
+    .certificate-nav { margin-bottom: 36px; }
+    .certificate-card { padding: 24px; }
+  }
+</style>
