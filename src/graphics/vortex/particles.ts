@@ -17,8 +17,12 @@ export class ParticleField {
     const angle = radius * .7 + (i % 3) * Math.PI * 2 / 3 + (this.hero ? (Math.random() - .5) * .35 : 0);
     const offset = i * 3;
     this.positions[offset] = Math.cos(angle) * radius + (Math.random() - .5) * 2;
-    this.positions[offset + 1] = (Math.random() - .5) * (radius * (this.hero ? .5 : .4) + 1);
     this.positions[offset + 2] = Math.sin(angle) * radius + (Math.random() - .5) * 2;
+    const actualRadius = Math.hypot(this.positions[offset], this.positions[offset + 2]);
+    const opening = Math.max(0, 1 - actualRadius / 4);
+    this.positions[offset + 1] = this.hero
+      ? (i % 2 === 0 ? 1 : -1) * (.025 + Math.random() * .045 + opening * opening * (1 + Math.random() * 2))
+      : (Math.random() - .5) * (radius * .4 + 1);
     this.velocities.fill(0, offset, offset + 3);
   }
   update(dt: number, config: VortexConfig, pointer?: { x: number; z: number }) {
@@ -32,7 +36,21 @@ export class ParticleField {
       let vx = -z * swirl - x / r * inflow;
       let vz = x * swirl - z / r * inflow;
       let vy = -y / (r + 1) * 1.5;
-      if (r < 1.4) { vy += (y >= 0 ? 1 : -1) * (1 - r / 1.4) * 15; vx -= x * 2.8; vz -= z * 2.8; }
+      if (this.hero) {
+        const side = i % 2 === 0 ? 1 : -1;
+        const opening = Math.max(0, 1 - r / 4);
+        const targetHeight = side * (.04 + opening * opening * 4);
+        vy = (targetHeight - y) * 2;
+        if (r < 1.4) {
+          vy = side * (2 + (1 - r / 1.4) * 13);
+          vx -= x * 2.8;
+          vz -= z * 2.8;
+        }
+      } else if (r < 1.4) {
+        vy += (y >= 0 ? 1 : -1) * (1 - r / 1.4) * 15;
+        vx -= x * 2.8;
+        vz -= z * 2.8;
+      }
       if (pointer) {
         const dx = x - pointer.x, dz = z - pointer.z;
         const distance = Math.hypot(dx, dz);
