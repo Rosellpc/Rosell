@@ -2,6 +2,11 @@
 import { Image } from 'astro:assets';
 import portrait from '../../assets/profile/foto-profile.png';
 import GlassCard from '../ui/GlassCard.astro';
+const certificates = [
+  { title: 'Desarrollo Frontend con React.js', file: 'desarrollo-frontend-react-js' },
+  { title: 'Desarrollo Backend con Python', file: 'desarrollo-backend-con-python' },
+  { title: 'Diseño y Desarrollo Frontend', file: 'diseno-desarrollo-frontend' },
+];
 ---
 <section id="sobre-mi" class="section wrap" aria-labelledby="about-title">
   <div class="section-heading"><div><p class="eyebrow">02 / Sobre mí</p><h2 id="about-title">Código con propósito.</h2></div></div>
@@ -15,7 +20,23 @@ import GlassCard from '../ui/GlassCard.astro';
       <h3>Entender primero.<br />Construir con intención.</h3>
       <p>Trabajo entre la interfaz y los datos: desde los pedidos y costos de un restaurante hasta una app de hábitos y una herramienta de investigación con IA.</p>
       <p>Mi foco está en que la experiencia sea clara y la lógica que la sostiene cuide los permisos, la persistencia y la integridad de los datos.</p>
+      <p>Formación en Platzi: rutas aprobadas de frontend con React.js, backend con Python y diseño y desarrollo frontend.</p>
+      <details class="education">
+        <summary>Ver certificados de Platzi</summary>
+        <ul>
+          {certificates.map(certificate => <li><a class="text-link" href={`/certificados/${certificate.file}.pdf`} target="_blank" rel="noopener noreferrer">{certificate.title}<span class="certificate-format">PDF · nueva pestaña ↗</span></a></li>)}
+        </ul>
+      </details>
       <div class="philosophy-foot"><span>Atención al detalle</span><span>Comunicación clara</span></div>
     </GlassCard>
   </div>
 </section>
+
+<style>
+  .education { margin-top: 16px; font-size: .8rem; }
+  .education summary { width: fit-content; cursor: pointer; color: var(--text); padding-block: 8px; }
+  .education summary:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; border-radius: 4px; }
+  .education ul { list-style: none; margin: 8px 0 0; padding: 0; }
+  .education .text-link { display: flex; flex-wrap: wrap; gap: 4px 12px; line-height: 1.6; }
+  .certificate-format { color: var(--muted); font-size: .66rem; }
+</style>
