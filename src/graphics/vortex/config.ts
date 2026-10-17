@@ -8,5 +8,5 @@ export interface VortexConfig {
   luminance: number;
 }
 export function createConfig(mode: VortexMode, compact: boolean): VortexConfig {
-  return { particleCount: mode === 'hero' ? (compact ? 2600 : 6500) : (compact ? 2000 : 10000), viscosity: .12, vorticity: 2.5, timeScale: .4, luminance: .7 };
+  return { particleCount: mode === 'hero' ? (compact ? 2340 : 5850) : (compact ? 2000 : 10000), viscosity: .12, vorticity: 2.5, timeScale: .4, luminance: .7 };
 }

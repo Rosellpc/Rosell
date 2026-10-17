@@ -1,10 +1,11 @@
 export const particleVertex = /* glsl */ `
   uniform float uPixelRatio;
+  uniform float uPointScale;
   varying float vTint;
   void main() {
     vTint = clamp(position.y * 0.045 + position.x * 0.025 + 0.5, 0.0, 1.0);
     vec4 point = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = clamp(42.0 / max(1.0, -point.z), 0.9, 3.0) * uPixelRatio;
+    gl_PointSize = clamp(42.0 / max(1.0, -point.z), 0.9, 3.0) * uPixelRatio * uPointScale;
     gl_Position = projectionMatrix * point;
   }
 `;

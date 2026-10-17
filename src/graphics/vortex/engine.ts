@@ -45,7 +45,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   scene.add(stars);
 
   let field: ParticleField;
-  const particleMaterial = new THREE.ShaderMaterial({ vertexShader: particleVertex, fragmentShader: particleFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() }, uLuminance: { value: config.luminance } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  const particleMaterial = new THREE.ShaderMaterial({ vertexShader: particleVertex, fragmentShader: particleFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() }, uPointScale: { value: mode === 'hero' ? .85 : 1 }, uLuminance: { value: config.luminance } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
   const particles = new THREE.Points(new THREE.BufferGeometry(), particleMaterial);
   if (mode === 'hero') {
     particles.position.x = matchMedia('(max-width: 640px)').matches ? 0 : 10;
@@ -56,7 +56,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   scene.add(particles);
   function setDensity(count: number) {
     config.particleCount = Math.max(1000, Math.min(20000, Math.round(count)));
-    field = new ParticleField(config.particleCount);
+    field = new ParticleField(config.particleCount, mode === 'hero');
     particles.geometry.dispose();
     particles.geometry = new THREE.BufferGeometry();
     particles.geometry.setAttribute('position', new THREE.BufferAttribute(field.positions, 3).setUsage(THREE.DynamicDrawUsage));
@@ -99,6 +99,19 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const { width, height } = host.getBoundingClientRect();
     if (!width || !height) return;
     camera.aspect = width / height; camera.updateProjectionMatrix();
+    if (mode === 'hero') {
+      // Project the jet axis to the actual canvas edge, including its tilt.
+      particles.updateMatrixWorld(true);
+      camera.updateMatrixWorld(true);
+      let near = 0, far = 100;
+      const endpoint = new THREE.Vector3();
+      for (let i = 0; i < 24; i++) {
+        const distance = (near + far) / 2;
+        endpoint.set(0, -distance, 0).applyMatrix4(particles.matrixWorld).project(camera);
+        if (endpoint.y < -1) far = distance; else near = distance;
+      }
+      field.lowerBoundary = -far;
+    }
     renderer.setSize(width, height);
     draw();
   }
