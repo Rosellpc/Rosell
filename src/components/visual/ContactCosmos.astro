@@ -1,0 +1,69 @@
+---
+const stars = Array.from({ length: 120 }, (_, i) => ({
+  x: ((i * 73.37 + 11) % 100), y: ((i * 41.19 + 7) % 100),
+  size: .7 + (i % 5) * .18, opacity: .18 + (i % 7) * .065,
+}));
+const bodies = Array.from({ length: 16 }, (_, i) => ({
+  x: i % 2 === 0 ? 3 + ((i * 7.3) % 24) : 74 + ((i * 5.7) % 23),
+  size: 2,
+  duration: i < 6 ? 7 + (i % 4) : 8 + (i % 5),
+  delay: -i * 2.71 - 2,
+  tail: 280,
+}));
+---
+<contact-cosmos>
+  <div class="cosmos-field" aria-hidden="true">
+    {stars.map(star => <i class="star" style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`}></i>)}
+    {bodies.map(body => <span class="falling-body fire" style={`--x:${body.x}%;--size:${body.size}px;--duration:${body.duration}s;--delay:${body.delay}s;--tail:${body.tail}px`}><i class="tail"></i><i class="head"></i></span>)}
+  </div>
+  <button type="button" aria-label="Pausar animación de contacto" aria-pressed="false" hidden>Pausar espacio Ⅱ</button>
+</contact-cosmos>
+
+<script>
+  class ContactCosmos extends HTMLElement {
+    private observer?: IntersectionObserver;
+    private motion = matchMedia('(prefers-reduced-motion: reduce)');
+    private visible = false;
+    private paused = false;
+    private button?: HTMLButtonElement;
+    connectedCallback() {
+      this.button = this.querySelector('button')!;
+      this.button.addEventListener('click', this.toggle);
+      this.motion.addEventListener('change', this.sync);
+      document.addEventListener('visibilitychange', this.sync);
+      this.observer = new IntersectionObserver(entries => { this.visible = entries[0].isIntersecting; this.sync(); });
+      this.observer.observe(this);
+      this.sync();
+    }
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.button?.removeEventListener('click', this.toggle);
+      this.motion.removeEventListener('change', this.sync);
+      document.removeEventListener('visibilitychange', this.sync);
+    }
+    private toggle = () => { this.paused = !this.paused; this.sync(); };
+    private sync = () => {
+      this.dataset.state = this.motion.matches ? 'static' : this.paused ? 'paused' : this.visible && !document.hidden ? 'running' : 'idle';
+      if (!this.button) return;
+      this.button.hidden = this.motion.matches;
+      this.button.setAttribute('aria-pressed', String(this.paused));
+      this.button.setAttribute('aria-label', this.paused ? 'Reanudar animación de contacto' : 'Pausar animación de contacto');
+      this.button.textContent = this.paused ? 'Reanudar espacio ▷' : 'Pausar espacio Ⅱ';
+    };
+  }
+  if (!customElements.get('contact-cosmos')) customElements.define('contact-cosmos', ContactCosmos);
+</script>
+
+<style>
+  contact-cosmos { position: absolute; inset: 0; z-index: 0; display: block; overflow: hidden; pointer-events: none; background: #020304; }
+  .cosmos-field { position: absolute; inset: 0; overflow: hidden; }
+  .star { position: absolute; border-radius: 50%; background: #f0f0eb; }
+  .falling-body { --light: 242, 240, 231; position: absolute; left: var(--x); top: -300px; bottom: -300px; width: var(--size); animation: contact-fall var(--duration) linear var(--delay) infinite; animation-play-state: paused; will-change: transform; }
+  .fire { --light: 255, 163, 78; }
+  .head { position: absolute; top: 0; left: 50%; width: var(--size); height: calc(var(--size) * 1.35); transform: translate(-50%, -50%); border-radius: 45% 48% 42% 50%; background: radial-gradient(circle at 35% 25%, #fffdf3, rgb(var(--light)) 45%, #777770); box-shadow: 0 0 6px rgba(var(--light), .25); }
+  .tail { position: absolute; top: calc(-1 * var(--tail)); left: 50%; height: var(--tail); width: 1px; transform: translateX(-50%); background: linear-gradient(to bottom, transparent, rgba(var(--light), .12) 65%, rgba(var(--light), .7)); }
+  contact-cosmos[data-state="running"] .falling-body { animation-play-state: running; }
+  button { position: absolute; right: 20px; bottom: 16px; pointer-events: auto; min-height: 32px; padding: 7px 12px; border: 1px solid #ffffff26; border-radius: 20px; background: #020304cc; color: #d0d0cb; font-size: .65rem; }
+  @keyframes contact-fall { from { transform: translateY(0); } to { transform: translateY(100%); } }
+  @media (prefers-reduced-motion: reduce) { .falling-body { animation: none; transform: translateY(50%); } button { display: none; } }
+</style>

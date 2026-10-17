@@ -1,13 +1,16 @@
 ---
 import { profile } from "../../data/profile";
+import ContactCosmos from '../visual/ContactCosmos.astro';
 ---
 
 <section
   id="contacto"
-  class="section wrap contact"
+  class="section contact"
   aria-labelledby="contact-title"
+  style="position: relative; isolation: isolate; overflow: hidden;"
 >
-  <div class="glass contact-panel">
+  <div class="contact-panel">
+    <ContactCosmos />
     <p class="eyebrow">04 / Siguiente paso</p>
     <h2 id="contact-title">Algo bueno empieza<br />con una conversación.</h2>
     <p>Busco sumarme a nuevos retos.</p>
@@ -40,6 +43,9 @@ import { profile } from "../../data/profile";
 </section>
 
 <style>
+  .contact { padding: 0; border-radius: 0; }
+  .contact-panel { position: relative; isolation: isolate; overflow: hidden; background: #020304; border-radius: 0; padding: 100px 24px 90px; }
+  .contact-panel > :not(contact-cosmos) { position: relative; z-index: 1; }
   .contact-panel .contact-mail-hint {
     margin: 12px 0 0;
     font-size: 0.72rem;
