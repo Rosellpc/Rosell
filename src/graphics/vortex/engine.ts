@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createConfig, type VortexMode, type CameraView } from './config';
 import { ParticleField } from './particles';
-import { particleVertex, particleFragment, backdropVertex, backdropFragment } from './shaders';
+import { particleVertex, particleFragment } from './shaders';
 
 export function createVortex(host: HTMLElement, mode: VortexMode, onError: () => void) {
   const config = createConfig(mode, matchMedia('(max-width: 640px)').matches);
@@ -14,7 +13,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   renderer.toneMappingExposure = 1.15;
   host.append(renderer.domElement);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(42, 1, .1, 100);
+  const camera = new THREE.PerspectiveCamera(42, 1, .1, 200);
   camera.position.set(0, 10, 29);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enabled = mode === 'lab';
@@ -24,32 +23,29 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   controls.target.set(0, 0, 0);
   controls.update();
 
-  const pmrem = new THREE.PMREMGenerator(renderer);
-  const room = new RoomEnvironment();
-  const environment = pmrem.fromScene(room, .04);
-  scene.environment = environment.texture;
-  const cyanLight = new THREE.DirectionalLight(0x67e8f9, 3);
-  cyanLight.position.set(-8, 10, 12);
-  const violetLight = new THREE.DirectionalLight(0xa78bfa, 3);
-  violetLight.position.set(8, 3, -4);
-  scene.add(cyanLight, violetLight);
-  room.dispose();
-  pmrem.dispose();
-  // Transmisión física: el material refracta el fondo opaco según IOR y espesor.
-  const glassGeometry = new THREE.TorusKnotGeometry(5, 1.05, 200, 24, 2, 3);
-  const glassMaterial = new THREE.MeshPhysicalMaterial({ color: 0xc4e5ff, metalness: 0, roughness: .08, transmission: .94, thickness: 2, ior: 1.45, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: .85, iridescence: 1, iridescenceIOR: 1.3, iridescenceThicknessRange: [180, 420] });
-  const glass = new THREE.Mesh(glassGeometry, glassMaterial);
-  glass.rotation.set(.2, .15, -.35);
-  scene.add(glass);
-  const backdropGeometry = new THREE.PlaneGeometry(75, 65);
-  const backdropMaterial = new THREE.ShaderMaterial({ vertexShader: backdropVertex, fragmentShader: backdropFragment });
-  const backdrop = new THREE.Mesh(backdropGeometry, backdropMaterial);
-  backdrop.position.z = -15;
-  scene.add(backdrop);
+  const starCount = matchMedia('(max-width: 640px)').matches ? 900 : 2200;
+  const starPositions = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const vertical = Math.random() * 2 - 1;
+    const radius = 45 + Math.random() * 45;
+    const spread = Math.sqrt(1 - vertical * vertical);
+    starPositions.set([Math.cos(angle) * spread * radius, vertical * radius, Math.sin(angle) * spread * radius], i * 3);
+  }
+  const starGeometry = new THREE.BufferGeometry();
+  starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+  const starMaterial = new THREE.PointsMaterial({ color: 0xc4d5ff, size: .085, transparent: true, opacity: .75, depthWrite: false, blending: THREE.AdditiveBlending });
+  const stars = new THREE.Points(starGeometry, starMaterial);
+  scene.add(stars);
 
   let field: ParticleField;
   const particleMaterial = new THREE.ShaderMaterial({ vertexShader: particleVertex, fragmentShader: particleFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() }, uLuminance: { value: config.luminance } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
   const particles = new THREE.Points(new THREE.BufferGeometry(), particleMaterial);
+  if (mode === 'hero') {
+    particles.position.x = matchMedia('(max-width: 640px)').matches ? 0 : 10;
+    particles.rotation.z = -.25;
+    particles.scale.setScalar(1.25);
+  }
   particles.frustumCulled = false;
   scene.add(particles);
   function setDensity(count: number) {
@@ -71,7 +67,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const cursor = new THREE.Vector2((event.clientX - rect.left) / rect.width * 2 - 1, -(event.clientY - rect.top) / rect.height * 2 + 1);
     raycaster.setFromCamera(cursor, camera);
     const intersection = raycaster.ray.intersectPlane(plane, new THREE.Vector3());
-    pointer = intersection ?? undefined;
+    pointer = intersection ? particles.worldToLocal(intersection) : undefined;
   }
   function pointerLeave() { pointer = undefined; }
   host.addEventListener('pointermove', pointerMove);
@@ -83,8 +79,8 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const dt = Math.min((now - (last || now)) / 1000, .05) * config.timeScale;
     last = now;
     field.update(dt, config, pointer);
+    stars.rotation.y += dt * .008;
     particles.geometry.attributes.position.needsUpdate = true;
-    glass.rotation.y += dt * .08;
     controls.update();
     draw();
     frame = requestAnimationFrame(animate);
@@ -125,8 +121,8 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
       host.removeEventListener('pointermove', pointerMove); host.removeEventListener('pointerleave', pointerLeave);
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
       controls.removeEventListener('change', draw); controls.dispose();
-      particles.geometry.dispose(); particleMaterial.dispose(); glassGeometry.dispose(); glassMaterial.dispose();
-      backdropGeometry.dispose(); backdropMaterial.dispose(); environment.dispose();
+      particles.geometry.dispose(); particleMaterial.dispose();
+      starGeometry.dispose(); starMaterial.dispose();
       scene.clear(); renderer.dispose(); renderer.domElement.remove();
     },
   };
