@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('presentación laboral y acceso a los nuevos casos de estudio', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
-  await expect(page.locator('.hero-description')).toContainText('Busco sumarme a un equipo');
+  await expect(page.locator('.hero-description')).toContainText('React, TypeScript y Python');
   for (const [title, slug] of [['Focus', 'focus'], ['Memely News', 'memely-news']]) {
     await page.getByRole('link', { name: `Leer caso de estudio de ${title}`, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`/proyectos/${slug}/$`));

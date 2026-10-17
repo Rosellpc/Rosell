@@ -41,11 +41,11 @@ const lab = mode === 'lab';
   .vortex[data-state="ready"] .canvas-host { opacity: 1; }
   .vortex[data-state="ready"] .scene-fallback { visibility: hidden; }
   .vortex:not(.vortex-lab) .canvas-host { mask-image: radial-gradient(ellipse, #000 30%, transparent 73%); }
-  .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse, #ffffff04, transparent 65%); }
-  .glass-loop { position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%; border: 18px solid #ffffff08; box-shadow: inset 3px 1px 3px #ffffff7a, inset -7px -3px 12px #000000b0, 2px 2px 2px #ffffff30, -3px -2px 6px #ffffff09; }
+  .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse at 35% 45%, #22d3ee12, transparent 55%), radial-gradient(ellipse at 65% 55%, #a78bfa18, transparent 60%); }
+  .glass-loop { position: absolute; width: 62%; aspect-ratio: 1; border-radius: 50%; border: 18px solid #67e8f926; box-shadow: inset 3px 1px 3px #a5f3fca6, inset -7px -3px 12px #312e8166, 2px 2px 2px #a78bfa80, -3px -2px 18px #22d3ee20; }
   .loop-one { transform: rotate(-30deg) scaleY(.53); }
-  .loop-two { transform: rotate(85deg) scaleY(.53); }
-  .loop-three { transform: rotate(30deg) scaleY(.53); }
+  .loop-two { transform: rotate(85deg) scaleY(.53); border-color: #a78bfa30; }
+  .loop-three { transform: rotate(30deg) scaleY(.53); border-color: #60a5fa30; }
   .scene-top { position: absolute; top: 18px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 2; }
   .scene-label { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; font-size: .51rem; color: var(--muted); }
   [data-pause] { color: #bfbfbb; background: #20202080; border: 1px solid var(--line); border-radius: 20px; font-size: .58rem; padding: 7px 11px; min-height: 32px; }

@@ -28,11 +28,16 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   const room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, .04);
   scene.environment = environment.texture;
+  const cyanLight = new THREE.DirectionalLight(0x67e8f9, 3);
+  cyanLight.position.set(-8, 10, 12);
+  const violetLight = new THREE.DirectionalLight(0xa78bfa, 3);
+  violetLight.position.set(8, 3, -4);
+  scene.add(cyanLight, violetLight);
   room.dispose();
   pmrem.dispose();
   // Transmisión física: el material refracta el fondo opaco según IOR y espesor.
   const glassGeometry = new THREE.TorusKnotGeometry(5, 1.05, 200, 24, 2, 3);
-  const glassMaterial = new THREE.MeshPhysicalMaterial({ color: 0xffffff, metalness: 0, roughness: .08, transmission: 1, thickness: 2, ior: 1.45, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: .65 });
+  const glassMaterial = new THREE.MeshPhysicalMaterial({ color: 0xc4e5ff, metalness: 0, roughness: .08, transmission: .94, thickness: 2, ior: 1.45, clearcoat: 1, clearcoatRoughness: .06, envMapIntensity: .85, iridescence: 1, iridescenceIOR: 1.3, iridescenceThicknessRange: [180, 420] });
   const glass = new THREE.Mesh(glassGeometry, glassMaterial);
   glass.rotation.set(.2, .15, -.35);
   scene.add(glass);
