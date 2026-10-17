@@ -16,6 +16,7 @@ const projects = defineCollection({
     previewAlt: z.string().optional(),
     repository: z.url().optional(),
     demo: z.url().optional(),
+    demoLabel: z.string().default('Abrir demo'),
   }),
 });
 

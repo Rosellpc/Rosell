@@ -9,7 +9,7 @@ export const profile = {
   location: 'Cusco, Perú',
   email,
   emailComposeUrl,
-  description: 'Desarrollador Full Stack. Interfaces cuidadas, APIs y sistemas con una base técnica sólida.',
+  description: 'Rosell, desarrollador full stack. Aplicaciones para negocios y herramientas de uso diario con React, TypeScript y Python. Busco incorporarme a un equipo.',
   // Añadir las URLs personales verificadas; no mostrar enlaces genéricos.
   socials: [
     {

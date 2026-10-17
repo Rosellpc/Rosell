@@ -1,5 +1,26 @@
 import { expect, test } from '@playwright/test';
 
+test('presentación laboral y acceso a los nuevos casos de estudio', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.locator('.hero-description')).toContainText('Busco sumarme a un equipo');
+  for (const [title, slug] of [['Focus', 'focus'], ['Memely News', 'memely-news']]) {
+    await page.getByRole('link', { name: `Leer caso de estudio de ${title}`, exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/proyectos/${slug}/$`));
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.getByRole('heading', { name: 'Mi aporte', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Resultado y evidencia', exact: true })).toBeVisible();
+    const destination = title === 'Focus'
+      ? page.getByRole('link', { name: 'Ver descargas' })
+      : page.getByRole('link', { name: 'Abrir demo' });
+    await expect(destination).toHaveAttribute('href', title === 'Focus'
+      ? 'https://github.com/Rosellpc/Focus/releases'
+      : 'https://memely-news.vercel.app/');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
+    await page.getByRole('link', { name: 'Volver a proyectos' }).click();
+  }
+});
+
 test('navegación, contenido y dimensiones adaptables', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
