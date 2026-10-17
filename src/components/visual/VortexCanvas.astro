@@ -41,12 +41,12 @@ const lab = mode === 'lab';
   .vortex[data-state="ready"] .canvas-host { opacity: 1; }
   .vortex[data-state="ready"] .scene-fallback { visibility: hidden; }
   .vortex:not(.vortex-lab) { height: 100%; }
-  .vortex:not(.vortex-lab) .scene-surface { height: 100%; border-radius: 0; background: #05070e; }
+  .vortex:not(.vortex-lab) .scene-surface { height: 100%; border-radius: 0; background: #020304; }
   .vortex:not(.vortex-lab) .scene-top { top: 120px; left: auto; right: max(24px, calc((100% - 1140px) / 2)); }
   .vortex:not(.vortex-lab) .scene-status { bottom: 90px; left: auto; right: 24px; }
-  .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse at 75% 50%, #29367524, transparent 55%), #05070e; }
-  .scene-fallback::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 17% 24%, #dae8ff, transparent), radial-gradient(1px 1px at 76% 63%, #a6c8ff, transparent), radial-gradient(1px 1px at 43% 81%, #ddd2ff, transparent); background-size: 173px 211px, 251px 197px, 337px 263px; opacity: .65; }
-  .particle-cloud { width: 76%; height: 62%; border-radius: 50%; transform: rotate(-24deg); background-image: radial-gradient(circle, #67e8f9a0 1px, transparent 1.5px), radial-gradient(circle, #a78bfab0 1px, transparent 1.5px); background-size: 19px 23px, 29px 17px; background-position: 0 0, 11px 7px; mask-image: radial-gradient(ellipse, #000 5%, transparent 70%); }
+  .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse at 75% 50%, #8995a312, transparent 55%), #020304; }
+  .scene-fallback::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 17% 24%, #e5e9f0, transparent), radial-gradient(1px 1px at 76% 63%, #c4cdd8, transparent), radial-gradient(1px 1px at 43% 81%, #f2eeea, transparent); background-size: 173px 211px, 251px 197px, 337px 263px; opacity: .65; }
+  .particle-cloud { width: 76%; height: 62%; border-radius: 50%; transform: rotate(-24deg); background-image: radial-gradient(circle, #d3dce8a0 1px, transparent 1.5px), radial-gradient(circle, #f1eee8b0 1px, transparent 1.5px); background-size: 19px 23px, 29px 17px; background-position: 0 0, 11px 7px; mask-image: radial-gradient(ellipse, #000 5%, transparent 70%); }
   .scene-top { position: absolute; top: 18px; left: 20px; right: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; z-index: 2; }
   .scene-label { font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; font-size: .51rem; color: var(--muted); }
   [data-pause] { color: #bfbfbb; background: #20202080; border: 1px solid var(--line); border-radius: 20px; font-size: .58rem; padding: 7px 11px; min-height: 32px; }
