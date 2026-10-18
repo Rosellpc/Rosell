@@ -1,6 +1,7 @@
 ---
 import { profile } from "../../data/profile";
 import ContactCosmos from '../visual/ContactCosmos.astro';
+import BlackHoleButton from '../visual/BlackHoleButton.astro';
 ---
 
 <section
@@ -14,16 +15,9 @@ import ContactCosmos from '../visual/ContactCosmos.astro';
     <p class="eyebrow">04 / Siguiente paso</p>
     <h2 id="contact-title">Algo bueno empieza<br />con una conversación.</h2>
     <p>Busco sumarme a nuevos retos.</p>
-    <a
-      class="button button-primary"
-      href={profile.emailComposeUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-describedby="contact-mail-hint"
-      >Escríbeme <span aria-hidden="true">↗</span></a
-    >
+    <BlackHoleButton href={profile.emailComposeUrl} label="Escríbeme" target="_blank" />
 
-    <div class="contact-links">
+    <nav class="glass glass-navigation contact-links" aria-label="Redes y contacto">
       {
         profile.socials.map((social) => (
           <a
@@ -38,7 +32,7 @@ import ContactCosmos from '../visual/ContactCosmos.astro';
           </a>
         ))
       }
-    </div>
+    </nav>
   </div>
 </section>
 
@@ -46,6 +40,11 @@ import ContactCosmos from '../visual/ContactCosmos.astro';
   .contact { padding: 0; border-radius: 0; }
   .contact-panel { position: relative; isolation: isolate; overflow: hidden; background: #020304; border-radius: 0; padding: 100px 24px 90px; }
   .contact-panel > :not(contact-cosmos) { position: relative; z-index: 1; }
+  .contact-links { display: flex; width: fit-content; max-width: 100%; margin: 30px auto 0; padding: 8px 20px; gap: 16px; border-radius: 999px; }
+  .contact-links a { display: inline-flex; align-items: center; min-height: 40px; padding: 4px 6px; color: #e4e4e0; border-radius: 20px; }
+  .contact-links a:hover { color: #fff; background: #ffffff0d; }
+  .contact-links a:focus-visible { outline-offset: 0; }
+  @media (max-width: 640px) { .contact-links { gap: 8px; padding: 7px 14px; } }
   .contact-panel .contact-mail-hint {
     margin: 12px 0 0;
     font-size: 0.72rem;

@@ -1,6 +1,7 @@
 ---
 import VortexCanvas from "../visual/VortexCanvas.astro";
 import { profile } from "../../data/profile";
+import BlackHoleButton from '../visual/BlackHoleButton.astro';
 ---
 
 <section class="hero hero-space" aria-labelledby="hero-title">
@@ -18,10 +19,8 @@ import { profile } from "../../data/profile";
         diario con React, TypeScript y Python.
       </p>
       <div class="actions">
-        <a class="button button-primary" href="#proyectos"
-          >Ver proyectos <span aria-hidden="true">↗</span></a
-        >
-        <a class="button button-secondary" href="#contacto">Hablemos</a>
+        <BlackHoleButton href="#proyectos" label="Ver proyectos" />
+        <BlackHoleButton href="#contacto" label="Hablemos" />
       </div>
     </div>
     <div class="hero-visual">

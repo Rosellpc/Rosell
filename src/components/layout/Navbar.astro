@@ -3,7 +3,7 @@ import { profile } from '../../data/profile';
 const inLab = Astro.url.pathname.startsWith('/lab');
 ---
 <header class="site-header">
-  <nav class="glass navigation" aria-label="Navegación principal">
+  <nav class="glass glass-navigation navigation" aria-label="Navegación principal">
     <a class="brand" href="/" aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true">.</span></a>
     <div class="nav-links">
       <a href="/#proyectos">Proyectos</a>
