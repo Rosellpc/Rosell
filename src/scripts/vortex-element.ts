@@ -14,9 +14,11 @@ class VortexScene extends HTMLElement {
     this.addEventListener('click', this.handleClick);
     this.addEventListener('input', this.handleInput);
     this.motion.addEventListener('change', this.handleMotion);
+    document.addEventListener('visibilitychange', this.syncAsteroids);
     this.observer = new IntersectionObserver(entries => {
       this.visible = entries[0].isIntersecting;
       this.engine?.setVisible(this.visible);
+      this.syncAsteroids();
       if (this.visible) void this.start();
     });
     this.observer.observe(this);
@@ -27,15 +29,20 @@ class VortexScene extends HTMLElement {
     this.engine?.dispose(); this.engine = undefined;
     this.observer?.disconnect();
     this.motion.removeEventListener('change', this.handleMotion);
+    document.removeEventListener('visibilitychange', this.syncAsteroids);
     this.removeEventListener('click', this.handleClick);
     this.removeEventListener('input', this.handleInput);
   }
   private message(text: string) { const status = this.querySelector('[data-status]'); if (status) status.textContent = text; }
+  private syncAsteroids = () => {
+    this.dataset.asteroids = this.visible && !this.paused && !this.motion.matches && !document.hidden && this.dataset.state === 'ready' ? 'running' : 'paused';
+  };
   private enableControls(enabled: boolean) { this.querySelectorAll<HTMLButtonElement | HTMLInputElement>('button, input').forEach(control => { control.disabled = !enabled; }); }
   private handleMotion = () => {
     if (this.motion.matches) {
       this.engine?.dispose(); this.engine = undefined;
       this.dataset.state = 'static';
+      this.syncAsteroids();
       this.enableControls(false);
       this.message('Movimiento reducido · Composición estática');
     } else if (this.visible) { void this.start(); }
@@ -43,6 +50,7 @@ class VortexScene extends HTMLElement {
   private fail = () => {
     this.engine?.dispose(); this.engine = undefined;
     this.dataset.state = 'fallback'; this.enableControls(false);
+    this.syncAsteroids();
     this.message('Vista estática · La animación no está disponible');
   };
   private async start() {
@@ -58,6 +66,7 @@ class VortexScene extends HTMLElement {
       this.engine.setVisible(this.visible);
       this.engine.setPaused(this.paused);
       this.dataset.state = 'ready';
+      this.syncAsteroids();
       this.enableControls(true);
       const density = this.querySelector<HTMLInputElement>('[data-param="density"]');
       if (density) { density.value = String(this.engine.config.particleCount); this.updateOutput('density', density.value); }
@@ -71,6 +80,7 @@ class VortexScene extends HTMLElement {
     if (target.hasAttribute('data-pause')) {
       this.paused = !this.paused;
       this.engine.setPaused(this.paused);
+      this.syncAsteroids();
       target.setAttribute('aria-pressed', String(this.paused));
       target.setAttribute('aria-label', this.paused ? 'Reanudar animación' : 'Pausar animación');
       target.textContent = this.paused ? 'Reanudar ▷' : 'Pausar Ⅱ';

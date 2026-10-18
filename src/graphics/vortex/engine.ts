@@ -47,34 +47,6 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   }
   setDensity(config.particleCount);
 
-  // Four distant white streaks, behind the hero's vortex.
-  const heroAsteroids = mode === 'hero' ? Array.from({ length: 4 }, (_, i) => {
-    const depth = 100 + i * 10;
-    const size = [.22, .38, .28, .45][i];
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0], 3));
-    const material = new THREE.PointsMaterial({ color: 0xffffff, size, transparent: true, opacity: .75, depthWrite: false, blending: THREE.AdditiveBlending });
-    const head = new THREE.Points(geometry, material);
-    const tailGeometry = new THREE.BufferGeometry();
-    tailGeometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 7 + i * 2, 0], 3));
-    tailGeometry.setAttribute('color', new THREE.Float32BufferAttribute([.6, .6, .6, 0, 0, 0], 3));
-    const tailMaterial = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .4, depthWrite: false, blending: THREE.AdditiveBlending });
-    const tail = new THREE.Line(tailGeometry, tailMaterial);
-    const group = new THREE.Group();
-    group.add(head, tail);
-    group.position.z = -depth;
-    camera.add(group);
-    return { group, depth, phase: [0.18, .65, .4, .88][i], speed: .055 + i * .008, geometry, material, tailGeometry, tailMaterial };
-  }) : [];
-  if (heroAsteroids.length) scene.add(camera);
-  function positionAsteroids() {
-    heroAsteroids.forEach((asteroid, i) => {
-      const halfHeight = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * asteroid.depth;
-      asteroid.group.position.x = [-.82, -.32, .38, .82][i] * halfHeight * camera.aspect;
-      asteroid.group.position.y = (1.25 - asteroid.phase * 2.5) * halfHeight;
-    });
-  }
-
   let frame = 0, last = 0, visible = false, paused = false, disposed = false;
   let pointer: THREE.Vector3 | undefined;
   const raycaster = new THREE.Raycaster();
@@ -98,8 +70,6 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     last = now;
     field.update(dt, config, pointer);
     stars.rotation.y += dt * .008;
-    heroAsteroids.forEach(asteroid => { asteroid.phase = (asteroid.phase + dt * asteroid.speed) % 1; });
-    positionAsteroids();
     particles.geometry.attributes.position.needsUpdate = true;
     controls.update();
     draw();
@@ -113,7 +83,6 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const { width, height } = host.getBoundingClientRect();
     if (!width || !height) return;
     camera.aspect = width / height; camera.updateProjectionMatrix();
-    positionAsteroids();
     if (mode === 'hero') {
       // Project the jet axis to the actual canvas edge, including its tilt.
       particles.updateMatrixWorld(true);
@@ -157,11 +126,6 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
       controls.removeEventListener('change', draw); controls.dispose();
       particles.geometry.dispose(); particleMaterial.dispose();
       stars.geometry.dispose(); stars.material.dispose();
-      heroAsteroids.forEach(asteroid => {
-        asteroid.geometry.dispose(); asteroid.material.dispose();
-        asteroid.tailGeometry.dispose(); asteroid.tailMaterial.dispose();
-        camera.remove(asteroid.group);
-      });
       scene.clear(); renderer.dispose(); renderer.domElement.remove();
     },
   };

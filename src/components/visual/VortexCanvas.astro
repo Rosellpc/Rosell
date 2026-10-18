@@ -1,5 +1,6 @@
 ---
 import type { VortexMode } from '../../graphics/vortex/config';
+import MeteorShower from './MeteorShower.astro';
 interface Props { mode?: VortexMode; }
 const { mode = 'hero' } = Astro.props;
 const lab = mode === 'lab';
@@ -7,6 +8,7 @@ const lab = mode === 'lab';
 <vortex-scene data-mode={mode} data-state="idle" class:list={['vortex', { 'vortex-lab': lab }]}>
   <div class="scene-surface">
     <div class="scene-fallback" aria-hidden="true"><div class="particle-cloud"></div></div>
+    {!lab && <MeteorShower variant="hero" />}
     <div class="canvas-host" aria-hidden="true"></div>
     <div class="scene-top"><span class="scene-label">{lab ? 'Navier–Stokes / Exploración visual' : 'Materia en movimiento'}</span><button data-pause type="button" disabled aria-pressed="false" aria-label="Pausar animación">Pausar <span aria-hidden="true">Ⅱ</span></button></div>
     <p class="scene-status" role="status" data-status>Composición estática</p>

@@ -1,0 +1,170 @@
+---
+interface Props {
+  variant: "hero" | "contact";
+}
+const { variant } = Astro.props;
+const paths =
+  variant === "hero"
+    ? [18, 83]
+    : [3, 12.5, 18, 31, 38.5, 44, 56, 63.5, 72, 78, 91, 97];
+const durations = [27, 5, 9, 122, 9, 22, 22, 2, 9, 22, 2, 9];
+---
+
+<meteor-shower class="meteor-shower" aria-hidden="true" data-variant={variant}>
+  {
+    paths.map((x, i) => (
+      <span
+        class="falling-body"
+        data-depth={variant === 'hero' ? (i === 0 ? 'near' : 'far') : undefined}
+        style={`--x:${x}%;--duration:${variant === 'hero' ? [9, 22][i] : durations[i]}s;--delay:${-i * 2.71 - 2}s`}
+      >
+        <>
+          <i class="tail" />
+          <i class="head" />
+        </>
+      </span>
+    ))
+  }
+</meteor-shower>
+
+<script>
+  class MeteorShower extends HTMLElement {
+    private flights = new Map<HTMLElement, Animation>();
+    private observer?: MutationObserver;
+    private motion = matchMedia('(prefers-reduced-motion: reduce)');
+    private scene?: HTMLElement;
+    connectedCallback() {
+      if (this.dataset.variant !== 'hero') return;
+      this.scene = this.closest('vortex-scene') ?? undefined;
+      this.motion.addEventListener('change', this.sync);
+      this.observer = new MutationObserver(this.sync);
+      if (this.scene) this.observer.observe(this.scene, { attributes: true, attributeFilter: ['data-state', 'data-asteroids'] });
+      this.sync();
+    }
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.motion.removeEventListener('change', this.sync);
+      this.flights.forEach(flight => flight.cancel());
+      this.flights.clear();
+    }
+    private launch(body: HTMLElement) {
+      const previous = parseFloat(body.style.getPropertyValue('--x'));
+      const other = Array.from(this.querySelectorAll<HTMLElement>('.falling-body')).find(el => el !== body);
+      const otherX = other ? parseFloat(other.style.getPropertyValue('--x')) : -100;
+      const candidates = [7, 18, 31, 43, 57, 69, 82, 93].filter(x => Math.abs(x - previous) >= 15 && Math.abs(x - otherX) >= 12);
+      const x = candidates[Math.floor(Math.random() * candidates.length)];
+      const oldDuration = parseFloat(body.style.getPropertyValue('--duration'));
+      const otherDuration = other ? parseFloat(other.style.getPropertyValue('--duration')) : 0;
+      const durations = [6, 11, 19].filter(value => value !== oldDuration && value !== otherDuration);
+      const duration = durations[Math.floor(Math.random() * durations.length)];
+      body.style.setProperty('--x', `${x}%`);
+      body.style.setProperty('--duration', `${duration}s`);
+      const flight = body.animate([{ transform: 'translateY(0)' }, { transform: 'translateY(100%)' }], { duration: duration * 1000, delay: 300 + Math.random() * 900, easing: 'linear', fill: 'both' });
+      this.flights.set(body, flight);
+      if (this.scene?.dataset.asteroids !== 'running') flight.pause();
+      flight.addEventListener('finish', () => {
+        flight.cancel();
+        this.flights.delete(body);
+        if (this.isConnected && !this.motion.matches) this.launch(body);
+      }, { once: true });
+    }
+    private sync = () => {
+      if (this.motion.matches) {
+        this.flights.forEach(flight => flight.cancel());
+        this.flights.clear();
+        return;
+      }
+      this.querySelectorAll<HTMLElement>('.falling-body').forEach(body => {
+        if (!this.flights.has(body)) this.launch(body);
+      });
+      this.flights.forEach(flight => {
+        if (this.scene?.dataset.asteroids === 'running') flight.play();
+        else flight.pause();
+      });
+    };
+  }
+  if (!customElements.get('meteor-shower')) customElements.define('meteor-shower', MeteorShower);
+</script>
+
+<style>
+  .meteor-shower {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .falling-body {
+    --light: 255, 163, 78;
+    --size: 2px;
+    --tail: 480px;
+    position: absolute;
+    left: var(--x);
+    top: -300px;
+    bottom: -300px;
+    width: var(--size);
+    animation: meteor-fall var(--duration) linear var(--delay) infinite;
+    animation-play-state: paused;
+    will-change: transform;
+  }
+  .head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: var(--size);
+    height: calc(var(--size) * 1.35);
+    transform: translate(-50%, -50%);
+    border-radius: 45% 48% 42% 50%;
+    background: radial-gradient(
+      circle at 35% 25%,
+      #fffdf3,
+      rgb(var(--light)) 45%,
+      #777770
+    );
+    box-shadow: 0 0 6px rgba(var(--light), 0.25);
+  }
+  .meteor-shower[data-variant="hero"] .falling-body[data-depth="near"] {
+    --size: 3px;
+    --tail: 480px;
+    --tail-width: 1.5px;
+  }
+  .meteor-shower[data-variant="hero"] .falling-body { animation: none; }
+  .meteor-shower[data-variant="hero"] .falling-body[data-depth="far"] {
+    --size: .9px;
+    --tail: 190px;
+    --tail-width: .65px;
+    opacity: .4;
+  }
+  .tail {
+    position: absolute;
+    top: calc(-1 * var(--tail));
+    left: 50%;
+    height: var(--tail);
+    width: var(--tail-width, 1px);
+    transform: translateX(-50%);
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(var(--light), 0.12) 65%,
+      rgba(var(--light), 0.7)
+    );
+  }
+  :global(contact-cosmos[data-state="running"]) .falling-body,
+  :global(vortex-scene[data-state="ready"][data-asteroids="running"])
+    .falling-body {
+    animation-play-state: running;
+  }
+  @keyframes meteor-fall {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(100%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .falling-body {
+      animation: none;
+      transform: translateY(50%);
+    }
+  }
+</style>
