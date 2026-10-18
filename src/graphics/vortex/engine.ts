@@ -2,7 +2,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createConfig, type VortexMode, type CameraView } from './config';
 import { ParticleField } from './particles';
-import { particleVertex, particleFragment, starVertex, starFragment } from './shaders';
+import { createStarfield } from './starfield';
+import { particleVertex, particleFragment } from './shaders';
 
 export function createVortex(host: HTMLElement, mode: VortexMode, onError: () => void) {
   const config = createConfig(mode, matchMedia('(max-width: 640px)').matches);
@@ -23,25 +24,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   controls.target.set(0, 0, 0);
   controls.update();
 
-  const starCount = matchMedia('(max-width: 640px)').matches ? 900 : 2200;
-  const starPositions = new Float32Array(starCount * 3);
-  const starSizes = new Float32Array(starCount);
-  const starBrightness = new Float32Array(starCount);
-  for (let i = 0; i < starCount; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const vertical = Math.random() * 2 - 1;
-    const radius = 45 + Math.random() * 45;
-    const spread = Math.sqrt(1 - vertical * vertical);
-    starPositions.set([Math.cos(angle) * spread * radius, vertical * radius, Math.sin(angle) * spread * radius], i * 3);
-    starSizes[i] = .65 + Math.pow(Math.random(), 3) * 1.2;
-    starBrightness[i] = .2 + Math.pow(Math.random(), 2) * .55;
-  }
-  const starGeometry = new THREE.BufferGeometry();
-  starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-  starGeometry.setAttribute('aSize', new THREE.BufferAttribute(starSizes, 1));
-  starGeometry.setAttribute('aBrightness', new THREE.BufferAttribute(starBrightness, 1));
-  const starMaterial = new THREE.ShaderMaterial({ vertexShader: starVertex, fragmentShader: starFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
-  const stars = new THREE.Points(starGeometry, starMaterial);
+  const stars = createStarfield(renderer.getPixelRatio());
   scene.add(stars);
 
   let field: ParticleField;
@@ -49,6 +32,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   const particles = new THREE.Points(new THREE.BufferGeometry(), particleMaterial);
   if (mode === 'hero') {
     particles.position.x = matchMedia('(max-width: 640px)').matches ? 0 : 10;
+    particles.position.addScaledVector(new THREE.Vector3().subVectors(particles.position, camera.position), .45);
     particles.rotation.z = -.25;
     particles.scale.setScalar(1.25);
   }
@@ -62,6 +46,34 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     particles.geometry.setAttribute('position', new THREE.BufferAttribute(field.positions, 3).setUsage(THREE.DynamicDrawUsage));
   }
   setDensity(config.particleCount);
+
+  // Four distant white streaks, behind the hero's vortex.
+  const heroAsteroids = mode === 'hero' ? Array.from({ length: 4 }, (_, i) => {
+    const depth = 100 + i * 10;
+    const size = [.22, .38, .28, .45][i];
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0], 3));
+    const material = new THREE.PointsMaterial({ color: 0xffffff, size, transparent: true, opacity: .75, depthWrite: false, blending: THREE.AdditiveBlending });
+    const head = new THREE.Points(geometry, material);
+    const tailGeometry = new THREE.BufferGeometry();
+    tailGeometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 7 + i * 2, 0], 3));
+    tailGeometry.setAttribute('color', new THREE.Float32BufferAttribute([.6, .6, .6, 0, 0, 0], 3));
+    const tailMaterial = new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, opacity: .4, depthWrite: false, blending: THREE.AdditiveBlending });
+    const tail = new THREE.Line(tailGeometry, tailMaterial);
+    const group = new THREE.Group();
+    group.add(head, tail);
+    group.position.z = -depth;
+    camera.add(group);
+    return { group, depth, phase: [0.18, .65, .4, .88][i], speed: .055 + i * .008, geometry, material, tailGeometry, tailMaterial };
+  }) : [];
+  if (heroAsteroids.length) scene.add(camera);
+  function positionAsteroids() {
+    heroAsteroids.forEach((asteroid, i) => {
+      const halfHeight = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * asteroid.depth;
+      asteroid.group.position.x = [-.82, -.32, .38, .82][i] * halfHeight * camera.aspect;
+      asteroid.group.position.y = (1.25 - asteroid.phase * 2.5) * halfHeight;
+    });
+  }
 
   let frame = 0, last = 0, visible = false, paused = false, disposed = false;
   let pointer: THREE.Vector3 | undefined;
@@ -86,6 +98,8 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     last = now;
     field.update(dt, config, pointer);
     stars.rotation.y += dt * .008;
+    heroAsteroids.forEach(asteroid => { asteroid.phase = (asteroid.phase + dt * asteroid.speed) % 1; });
+    positionAsteroids();
     particles.geometry.attributes.position.needsUpdate = true;
     controls.update();
     draw();
@@ -99,6 +113,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const { width, height } = host.getBoundingClientRect();
     if (!width || !height) return;
     camera.aspect = width / height; camera.updateProjectionMatrix();
+    positionAsteroids();
     if (mode === 'hero') {
       // Project the jet axis to the actual canvas edge, including its tilt.
       particles.updateMatrixWorld(true);
@@ -141,7 +156,12 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
       renderer.domElement.removeEventListener('webglcontextlost', contextLost);
       controls.removeEventListener('change', draw); controls.dispose();
       particles.geometry.dispose(); particleMaterial.dispose();
-      starGeometry.dispose(); starMaterial.dispose();
+      stars.geometry.dispose(); stars.material.dispose();
+      heroAsteroids.forEach(asteroid => {
+        asteroid.geometry.dispose(); asteroid.material.dispose();
+        asteroid.tailGeometry.dispose(); asteroid.tailMaterial.dispose();
+        camera.remove(asteroid.group);
+      });
       scene.clear(); renderer.dispose(); renderer.domElement.remove();
     },
   };

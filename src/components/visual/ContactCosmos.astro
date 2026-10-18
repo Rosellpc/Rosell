@@ -1,7 +1,7 @@
 ---
-const stars = Array.from({ length: 120 }, (_, i) => ({
-  x: ((i * 73.37 + 11) % 100), y: ((i * 41.19 + 7) % 100),
-  size: .7 + (i % 5) * .18, opacity: .18 + (i % 7) * .065,
+const stars = Array.from({ length: 120 }, () => ({
+  x: Math.random() * 100, y: Math.random() * 100,
+  size: .65 + Math.pow(Math.random(), 3) * 1.2, opacity: .2 + Math.pow(Math.random(), 2) * .55,
 }));
 const bodies = Array.from({ length: 16 }, (_, i) => ({
   x: i % 2 === 0 ? 3 + ((i * 7.3) % 24) : 74 + ((i * 5.7) % 23),
@@ -12,6 +12,7 @@ const bodies = Array.from({ length: 16 }, (_, i) => ({
 }));
 ---
 <contact-cosmos>
+  <div class="star-canvas" aria-hidden="true"></div>
   <div class="cosmos-field" aria-hidden="true">
     {stars.map(star => <i class="star" style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`}></i>)}
     {bodies.map(body => <span class="falling-body fire" style={`--x:${body.x}%;--size:${body.size}px;--duration:${body.duration}s;--delay:${body.delay}s;--tail:${body.tail}px`}><i class="tail"></i><i class="head"></i></span>)}
@@ -20,7 +21,10 @@ const bodies = Array.from({ length: 16 }, (_, i) => ({
 </contact-cosmos>
 
 <script>
+  import type { createContactStars } from '../../graphics/vortex/contact-stars';
   class ContactCosmos extends HTMLElement {
+    private starfield?: ReturnType<typeof createContactStars>;
+    private loading = false;
     private observer?: IntersectionObserver;
     private motion = matchMedia('(prefers-reduced-motion: reduce)');
     private visible = false;
@@ -36,14 +40,44 @@ const bodies = Array.from({ length: 16 }, (_, i) => ({
       this.sync();
     }
     disconnectedCallback() {
+      this.starfield?.dispose();
+      this.starfield = undefined;
+      delete this.dataset.stars;
       this.observer?.disconnect();
       this.button?.removeEventListener('click', this.toggle);
       this.motion.removeEventListener('change', this.sync);
       document.removeEventListener('visibilitychange', this.sync);
     }
     private toggle = () => { this.paused = !this.paused; this.sync(); };
+    private async startStars() {
+      if (this.loading || this.starfield || this.dataset.stars === 'fallback') return;
+      this.loading = true;
+      try {
+        const { createContactStars } = await import('../../graphics/vortex/contact-stars');
+        if (!this.isConnected || this.motion.matches) return;
+        this.starfield = createContactStars(this.querySelector('.star-canvas')!, () => {
+          this.starfield?.dispose();
+          this.starfield = undefined;
+          this.dataset.stars = 'fallback';
+        });
+        this.dataset.stars = 'ready';
+        this.sync();
+      } catch {
+        this.dataset.stars = 'fallback';
+      } finally {
+        this.loading = false;
+      }
+    }
     private sync = () => {
       this.dataset.state = this.motion.matches ? 'static' : this.paused ? 'paused' : this.visible && !document.hidden ? 'running' : 'idle';
+      if (this.motion.matches) {
+        this.starfield?.dispose();
+        this.starfield = undefined;
+        if (this.dataset.stars === 'ready') delete this.dataset.stars;
+      } else {
+        if (this.visible && !document.hidden && !this.paused) void this.startStars();
+        this.starfield?.setActive(this.dataset.state === 'running');
+      }
       if (!this.button) return;
       this.button.hidden = this.motion.matches;
       this.button.setAttribute('aria-pressed', String(this.paused));
@@ -57,6 +91,9 @@ const bodies = Array.from({ length: 16 }, (_, i) => ({
 <style>
   contact-cosmos { position: absolute; inset: 0; z-index: 0; display: block; overflow: hidden; pointer-events: none; background: #020304; }
   .cosmos-field { position: absolute; inset: 0; overflow: hidden; }
+  .star-canvas { position: absolute; inset: 0; }
+  .star-canvas :global(canvas) { display: block; width: 100%; height: 100%; }
+  contact-cosmos[data-stars="ready"] .star { visibility: hidden; }
   .star { position: absolute; border-radius: 50%; background: #f0f0eb; }
   .falling-body { --light: 242, 240, 231; position: absolute; left: var(--x); top: -300px; bottom: -300px; width: var(--size); animation: contact-fall var(--duration) linear var(--delay) infinite; animation-play-state: paused; will-change: transform; }
   .fire { --light: 255, 163, 78; }

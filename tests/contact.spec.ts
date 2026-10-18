@@ -24,6 +24,12 @@ test('el fondo de contacto queda contenido y no tapa el hero', async ({ page }) 
   await expect(cosmos).toHaveAttribute('data-state', 'static');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await expect(cosmos).toHaveAttribute('data-state', 'running');
+  await expect(cosmos).toHaveAttribute('data-stars', 'ready');
+  await expect(cosmos.locator('canvas')).toHaveCount(1);
+  await expect(contact.locator('vortex-scene')).toHaveCount(0);
   await cosmos.getByRole('button', { name: 'Pausar animación de contacto' }).click();
   await expect(cosmos).toHaveAttribute('data-state', 'paused');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await expect(cosmos).toHaveAttribute('data-state', 'static');
+  await expect(cosmos.locator('canvas')).toHaveCount(0);
 });

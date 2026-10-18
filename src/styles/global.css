@@ -134,7 +134,7 @@ ul { padding: 0; }
   .hero { display: flex; flex-direction: column; align-items: stretch; padding-top: 130px; gap: 5px; }
   .hero-copy { padding-block: 10px 0; }
   .hero h1 { font-size: clamp(2.8rem, 10vw, 3.8rem); }
-  .hero-description { font-size: .87rem; max-width: 350px; }
+  .hero-description{ font-size: .87rem; max-width: 350px; }
   .hero-visual { margin-top: 10px; }
   .hero-foot { font-size: .58rem; padding-top: 30px; }
   .hero-foot a { max-width: 100px; text-align: right; }
