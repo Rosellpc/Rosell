@@ -1,4 +1,5 @@
 ---
+import ProjectImage from './ProjectImage.astro';
 import type { GalleryProject } from '../../data/project-gallery';
 type Props = GalleryProject;
 const { title, href, technologies, preview, description, caseStudy = false } = Astro.props;
@@ -6,11 +7,11 @@ const { title, href, technologies, preview, description, caseStudy = false } = A
 <a class="glass project-tile" href={href} target={caseStudy ? undefined : '_blank'} rel={caseStudy ? undefined : 'noopener noreferrer'} aria-label={caseStudy ? `Leer caso de estudio de ${title}` : `Ver ${title} (abre en otra pestaña)`}>
   <h3>{title}</h3>
   <div class="tile-preview" aria-hidden="true">
-    {preview ? <img src={preview} alt="" loading="lazy" decoding="async" width="480" height="300" /> : <div class="preview-placeholder"><span class="preview-bar"><i></i><i></i><i></i></span><span class="preview-label">Preview</span></div>}
+    {preview ? <ProjectImage src={preview} alt="" /> : <div class="preview-placeholder"><span class="preview-bar"><i></i><i></i><i></i></span><span class="preview-label">Preview</span></div>}
   </div>
   {description && <p class="tile-description">{description}</p>}
   <p class="tile-technologies">{technologies.length ? technologies.join(' / ') : 'Demo web / Enlace público'}</p>
-  <span class="tile-arrow">{caseStudy && <span class="tile-case-label">Caso de estudio </span>}<span aria-hidden="true">→</span></span>
+  <span class="tile-arrow"><span class="tile-case-label">{caseStudy ? 'Caso de estudio ' : 'Ver demo '}</span><span aria-hidden="true">→</span></span>
 </a>
 
 <style>
@@ -34,7 +35,7 @@ const { title, href, technologies, preview, description, caseStudy = false } = A
     overflow-wrap: anywhere;
   }
   .tile-preview { width: 100%; padding: 32px 12px; }
-  .tile-preview img, .preview-placeholder {
+  .tile-preview :global(img), .preview-placeholder {
     width: 100%;
     aspect-ratio: 8 / 5;
     border: 1px solid #ffffff20;
@@ -43,7 +44,7 @@ const { title, href, technologies, preview, description, caseStudy = false } = A
     box-shadow: inset 0 1px 0 #ffffff0c, 0 12px 28px #00000024;
     transition: transform .35s ease, border-color .35s ease;
   }
-  .tile-preview img { height: auto; object-fit: cover; }
+  .tile-preview :global(img) { height: auto; object-fit: cover; }
   .preview-placeholder { display: flex; flex-direction: column; }
   .preview-bar { height: 22px; display: flex; align-items: center; gap: 4px; padding-inline: 10px; border-bottom: 1px solid #ffffff0a; }
   .preview-bar i { width: 3px; height: 3px; border-radius: 50%; background: #ffffff2b; }
@@ -56,7 +57,7 @@ const { title, href, technologies, preview, description, caseStudy = false } = A
   .project-tile:focus-visible .tile-arrow { transform: translateX(4px); }
   @media (hover: hover) {
     .project-tile:hover { transform: translateY(-4px); border-color: #ffffff35; box-shadow: inset 0 1px 0 #ffffff15, 0 22px 48px #00000024; }
-    .project-tile:hover .preview-placeholder, .project-tile:hover img { transform: translateY(-2px); border-color: #ffffff33; }
+    .project-tile:hover .preview-placeholder, .project-tile:hover :global(img) { transform: translateY(-2px); border-color: #ffffff33; }
     .project-tile:hover .tile-arrow { transform: translateX(4px); }
   }
   @media (max-width: 640px) { .project-tile { padding: 28px 24px 22px; } }

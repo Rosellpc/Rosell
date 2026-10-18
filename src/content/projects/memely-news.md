@@ -4,6 +4,8 @@ description: Búsqueda de noticias y consultas con IA desde una interfaz web o u
 category: Backend e IA · Investigación de noticias
 technologies: [Python, FastAPI, JavaScript, Redis, OpenAI, Gemini]
 featured: false
+contribution: API, interfaz web e integración de IA
+status: Demo web disponible
 order: 2
 preview: /projects/memely-news.png
 previewAlt: Interfaz de Memely News para buscar noticias y realizar consultas con IA

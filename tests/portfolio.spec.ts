@@ -4,10 +4,18 @@ test('presentación laboral y acceso a los nuevos casos de estudio', async ({ pa
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.locator('.hero-description')).toContainText('React, TypeScript y Python');
+  const previews = page.locator('.tile-preview img');
+  await expect(previews).toHaveCount(6);
+  for (const preview of await previews.all()) {
+    await expect(preview).toHaveAttribute('srcset', /\.webp 320w/);
+    await expect(preview).toHaveAttribute('loading', 'lazy');
+  }
   for (const [title, slug] of [['Focus', 'focus'], ['Memely News', 'memely-news']]) {
     await page.getByRole('link', { name: `Leer caso de estudio de ${title}`, exact: true }).click();
     await expect(page).toHaveURL(new RegExp(`/proyectos/${slug}/$`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
+    await expect(page.locator('.case-summary')).toContainText('Mi aporte');
+    await expect(page.locator('.case-summary')).toContainText('Estado');
     await expect(page.getByRole('heading', { name: 'Mi aporte', exact: true })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Resultado y evidencia', exact: true })).toBeVisible();
     const destination = title === 'Focus'

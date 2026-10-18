@@ -4,6 +4,8 @@ description: Plataforma de autoservicio que conecta el menú y los pedidos con C
 category: Full stack · Gestión gastronómica
 technologies: [React, TypeScript, Django REST, PostgreSQL, Supabase]
 featured: true
+contribution: Frontend, API y modelado de datos
+status: MVP local · SaaS previsto
 order: 0
 architecture: [React, Django REST, PostgreSQL]
 preview: /projects/restaurantos-costing.png
@@ -26,7 +28,7 @@ El módulo de Costeo reúne insumos, inventario de referencia, recetas versionad
 
 El dashboard reúne pedidos, producción y existencias, con filtros por período, evolución diaria y productos más solicitados. Los importes de esta captura corresponden a pedidos de demostración y no representan cobros reales.
 
-<a href="/projects/restaurantos-dashboard.png" aria-label="Ver captura del dashboard en tamaño completo"><img class="project-detail-preview" src="/projects/restaurantos-dashboard.png" alt="Dashboard de RestaurantOS con indicadores de pedidos, evolución diaria y productos más solicitados" width="3840" height="2160" loading="lazy" decoding="async" /></a>
+![Dashboard de RestaurantOS con pedidos de demostración, evolución diaria y productos más solicitados](../../assets/projects/restaurantos-dashboard.png)
 
 ## Decisiones técnicas
 

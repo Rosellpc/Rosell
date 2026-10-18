@@ -4,6 +4,8 @@ description: Hábitos, temporizador y reportes en Windows y Android, con datos l
 category: Aplicación multiplataforma · Productividad
 technologies: [React, TypeScript, Tauri, Rust, SQLite]
 featured: false
+contribution: Interfaz e integración con Tauri, Rust y SQLite
+status: Aplicación con instaladores para Windows y Android
 order: 1
 preview: /projects/focus.png
 previewAlt: Interfaz de Focus para gestionar hábitos y consultar el progreso
