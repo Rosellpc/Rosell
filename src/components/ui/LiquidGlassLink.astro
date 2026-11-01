@@ -1,0 +1,18 @@
+---
+interface Props { href: string; label: string; target?: '_blank' | '_self'; }
+const { href, label, target } = Astro.props;
+---
+<a class="glass liquid-glass-link" href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>
+  <span>{label}</span>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 12h14m-5-5 5 5-5 5" /></svg>
+</a>
+<style>
+  .liquid-glass-link { display: inline-flex; align-items: center; justify-content: center; gap: 24px; min-height: 50px; padding: 13px 24px; border-radius: 999px; background-color: #17171799; border-color: #ffffff24; border-top-color: #ffffff42; color: #efefec; font-size: .8rem; font-weight: 450; letter-spacing: .01em; pointer-events: auto; transition: background-color .2s ease, border-color .2s ease, transform .2s ease; }
+  .liquid-glass-link::before { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(145deg, #ffffff06, transparent 48%); pointer-events: none; }
+  .liquid-glass-link svg { flex-shrink: 0; opacity: .65; transition: transform .2s ease; }
+  .liquid-glass-link:focus-visible { outline: 2px solid #efefec; outline-offset: 5px; }
+  @media (hover: hover) { .liquid-glass-link:hover { background-color: #ffffff0e; border-color: #ffffff50; transform: translateY(-2px); } .liquid-glass-link:hover svg { transform: translateX(3px); } }
+  @media (prefers-reduced-motion: reduce) { .liquid-glass-link, .liquid-glass-link svg { transition: none; transform: none; } }
+  @media (prefers-reduced-transparency: reduce) { .liquid-glass-link { background: #242424; backdrop-filter: none; -webkit-backdrop-filter: none; } }
+  @supports not (backdrop-filter: blur(1px)) { .liquid-glass-link { background: #242424; } }
+</style>

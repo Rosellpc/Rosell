@@ -1,6 +1,5 @@
 ---
 import type { VortexMode } from '../../graphics/vortex/config';
-import MeteorShower from './MeteorShower.astro';
 interface Props { mode?: VortexMode; }
 const { mode = 'hero' } = Astro.props;
 const lab = mode === 'lab';
@@ -8,9 +7,8 @@ const lab = mode === 'lab';
 <vortex-scene data-mode={mode} data-state="idle" class:list={['vortex', { 'vortex-lab': lab }]}>
   <div class="scene-surface">
     <div class="scene-fallback" aria-hidden="true"><div class="particle-cloud"></div></div>
-    {!lab && <MeteorShower variant="hero" />}
     <div class="canvas-host" aria-hidden="true"></div>
-    <div class="scene-top"><span class="scene-label">{lab ? 'Navier–Stokes / Exploración visual' : 'Materia en movimiento'}</span><button data-pause type="button" disabled aria-pressed="false" aria-label="Pausar animación">Pausar <span aria-hidden="true">Ⅱ</span></button></div>
+    <div class="scene-top"><span class="scene-label">{lab ? 'Navier–Stokes / Exploración visual' : 'Cielo profundo / Exploraci\u00f3n visual'}</span><button data-pause type="button" disabled aria-pressed="false" aria-label="Pausar animación">Pausar <span aria-hidden="true">Ⅱ</span></button></div>
     <p class="scene-status" role="status" data-status>Composición estática</p>
   </div>
   {lab && <div class="lab-controls glass">
@@ -46,6 +44,8 @@ const lab = mode === 'lab';
   .vortex:not(.vortex-lab) .scene-surface { height: 100%; border-radius: 0; background: #020304; }
   .vortex:not(.vortex-lab) .scene-top { top: 120px; left: auto; right: max(24px, calc((100% - 1140px) / 2)); }
   .vortex:not(.vortex-lab) .scene-status { bottom: 90px; left: auto; right: 24px; }
+  .vortex:not(.vortex-lab) .scene-fallback { background: radial-gradient(ellipse at 76% 35%, #30475d28, transparent 44%), radial-gradient(ellipse at 63% 65%, #4b3c3120, transparent 38%), #020304; }
+  .vortex:not(.vortex-lab) .particle-cloud { width: 90%; height: 80%; opacity: .5; transform: rotate(-32deg); }
   .scene-fallback { display: grid; place-items: center; background: radial-gradient(ellipse at 75% 50%, #8995a312, transparent 55%), #020304; }
   .scene-fallback::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 17% 24%, #e5e9f0, transparent), radial-gradient(1px 1px at 76% 63%, #c4cdd8, transparent), radial-gradient(1px 1px at 43% 81%, #f2eeea, transparent); background-size: 173px 211px, 251px 197px, 337px 263px; opacity: .65; }
   .particle-cloud { width: 76%; height: 62%; border-radius: 50%; transform: rotate(-24deg); background-image: radial-gradient(circle, #d3dce8a0 1px, transparent 1.5px), radial-gradient(circle, #f1eee8b0 1px, transparent 1.5px); background-size: 19px 23px, 29px 17px; background-position: 0 0, 11px 7px; mask-image: radial-gradient(ellipse, #000 5%, transparent 70%); }

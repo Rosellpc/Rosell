@@ -7,18 +7,18 @@ export interface GalleryProject {
   caseStudy?: boolean;
 }
 
-const airbnbDemo = 'https://airbnb-fancy.vercel.app/';
+const rosellGptDemo = 'https://rosell-gpt-n1hv.vercel.app/';
 const boleliDemo = 'https://boleli-m67g.vercel.app/';
 
 // Tecnologías y vistas previas por proyecto.
 export const projectGallery: GalleryProject[] = [
   {
-    title: 'Airbnb Fancy',
-    href: airbnbDemo,
-    technologies: ['React', 'TypeScript', 'Vite', 'React Router', 'CSS', 'ESLint'],
-    preview: '/projects/airbnb-fancy.jpg',
-    description: 'Exploración de alojamientos, filtros y favoritos. Prototipo responsive con autenticación simulada.',
-  }, 
+    title: 'Rosell GPT',
+    href: rosellGptDemo,
+    technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'OpenAI API', 'Shiki'],
+    preview: '/projects/rosell-gpt.png',
+    description: 'Asistente de IA con conversaciones con contexto, respuestas progresivas, generación de imágenes, transcripción y voz. Markdown y código resaltado en una interfaz adaptable a móvil.',
+  },
   { title: 'Boleli', href: boleliDemo, technologies: ['Next.js', 'TypeScript', 'Tailwind CSS'], preview: '/projects/boleli.jpg', description: 'Catálogo de tecnología y estilo de vida con navegación por categorías e interfaz de cristal.' },
   { title: 'Focus', href: '/proyectos/focus/', caseStudy: true, technologies: ['Rust', 'Tauri', 'React', 'TypeScript', 'SQLite'], preview: '/projects/focus.png', description: 'Hábitos y tiempo en Windows y Android. Persistencia local con SQLite y restauración transaccional para conservar los registros.' },
   { title: 'Lifegram', href: 'https://lifegram-swart.vercel.app/', technologies: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Supabase'], preview: '/projects/lifegram.png', description: 'Plataforma social con perfiles, publicaciones, historias y seguimiento. Interfaz Liquid Glass e integración de mensajes privados y notificaciones en tiempo real.' },

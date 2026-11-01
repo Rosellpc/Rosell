@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { createConfig, type VortexMode, type CameraView } from './config';
 import { ParticleField } from './particles';
 import { createStarfield } from './starfield';
+import { createDeepSpace } from './deep-space';
 import { particleVertex, particleFragment } from './shaders';
 
 export function createVortex(host: HTMLElement, mode: VortexMode, onError: () => void) {
@@ -24,11 +25,13 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
   controls.target.set(0, 0, 0);
   controls.update();
 
-  const stars = createStarfield(renderer.getPixelRatio());
+  const sky = mode === 'hero' ? createDeepSpace() : undefined;
+  if (sky) scene.add(sky);
+  const stars = createStarfield(renderer.getPixelRatio(), mode === 'hero');
   scene.add(stars);
 
   let field: ParticleField;
-  const particleMaterial = new THREE.ShaderMaterial({ vertexShader: particleVertex, fragmentShader: particleFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() }, uPointScale: { value: mode === 'hero' ? .85 : 1 }, uLuminance: { value: config.luminance } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  const particleMaterial = new THREE.ShaderMaterial({ vertexShader: particleVertex, fragmentShader: particleFragment, uniforms: { uPixelRatio: { value: renderer.getPixelRatio() }, uPointScale: { value: mode === 'hero' ? .65 : 1 }, uLuminance: { value: mode === 'hero' ? config.luminance * .7 : config.luminance } }, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
   const particles = new THREE.Points(new THREE.BufferGeometry(), particleMaterial);
   if (mode === 'hero') {
     particles.position.x = matchMedia('(max-width: 640px)').matches ? 0 : 10;
@@ -69,7 +72,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
     const dt = Math.min((now - (last || now)) / 1000, .05) * config.timeScale;
     last = now;
     field.update(dt, config, pointer);
-    stars.rotation.y += dt * .008;
+    stars.rotation.y += dt * (mode === 'hero' ? .0015 : .008);
     particles.geometry.attributes.position.needsUpdate = true;
     controls.update();
     draw();
@@ -126,6 +129,7 @@ export function createVortex(host: HTMLElement, mode: VortexMode, onError: () =>
       controls.removeEventListener('change', draw); controls.dispose();
       particles.geometry.dispose(); particleMaterial.dispose();
       stars.geometry.dispose(); stars.material.dispose();
+      sky?.geometry.dispose(); sky?.material.dispose();
       scene.clear(); renderer.dispose(); renderer.domElement.remove();
     },
   };

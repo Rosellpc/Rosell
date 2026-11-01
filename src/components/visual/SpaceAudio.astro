@@ -1,0 +1,161 @@
+<space-audio data-state="off">
+  <button type="button" disabled aria-pressed="false" aria-label="Activar ambiente espacial">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>
+    <span data-audio-label>Activar ambiente</span>
+  </button>
+  <label hidden>Volumen<input aria-label="Volumen del ambiente espacial" type="range" min="0" max="100" value="25" /></label>
+  <span class="audio-feedback" role="status" aria-live="polite"></span>
+</space-audio>
+
+<script>
+  class SpaceAudio extends HTMLElement {
+    private context?: AudioContext;
+    private master?: GainNode;
+    private sources: AudioScheduledSourceNode[] = [];
+    private nodes: AudioNode[] = [];
+    private enabled = false;
+    private visible = false;
+    private operation = 0;
+    private observer?: IntersectionObserver;
+    private timer?: ReturnType<typeof setTimeout>;
+    private button?: HTMLButtonElement;
+    private volume?: HTMLInputElement;
+
+    connectedCallback() {
+      this.button = this.querySelector('button')!;
+      this.volume = this.querySelector('input')!;
+      if (!window.AudioContext) {
+        this.querySelector('[data-audio-label]')!.textContent = 'Audio no disponible';
+        return;
+      }
+      this.button.disabled = false;
+      this.button.addEventListener('click', this.toggle);
+      this.volume.addEventListener('input', this.adjustVolume);
+      document.addEventListener('visibilitychange', this.sync);
+      this.observer = new IntersectionObserver(entries => {
+        this.visible = entries[0].isIntersecting;
+        void this.sync();
+      }, { threshold: 0.08 });
+      this.observer.observe(this.closest('.hero-space') ?? this);
+    }
+
+    disconnectedCallback() {
+      this.operation++;
+      clearTimeout(this.timer);
+      this.observer?.disconnect();
+      this.button?.removeEventListener('click', this.toggle);
+      this.volume?.removeEventListener('input', this.adjustVolume);
+      document.removeEventListener('visibilitychange', this.sync);
+      this.sources.forEach(source => { try { source.stop(); } catch {} });
+      this.nodes.forEach(node => node.disconnect());
+      void this.context?.close().catch(() => {});
+      this.context = undefined;
+      this.sources = [];
+      this.nodes = [];
+      this.enabled = false;
+    }
+
+    private createSound() {
+      const context = this.context = new AudioContext();
+      const master = this.master = context.createGain();
+      master.gain.value = 0;
+      const limiter = context.createDynamicsCompressor();
+      limiter.threshold.value = -24;
+      limiter.ratio.value = 6;
+      master.connect(limiter).connect(context.destination);
+      this.nodes.push(master, limiter);
+      // Quiet, slowly modulated harmonics: no external audio assets or downloads.
+      [55, 82.41, 110.2, 164.81].forEach((frequency, index) => {
+        const tone = context.createOscillator();
+        const level = context.createGain();
+        const modulation = context.createOscillator();
+        const depth = context.createGain();
+        tone.type = 'sine'; tone.frequency.value = frequency;
+        level.gain.value = index === 0 ? 0.055 : 0.025;
+        modulation.frequency.value = 0.025 + index * 0.013;
+        depth.gain.value = 0.006;
+        modulation.connect(depth).connect(level.gain);
+        tone.connect(level).connect(master);
+        tone.start(); modulation.start();
+        this.sources.push(tone, modulation);
+        this.nodes.push(tone, level, modulation, depth);
+      });
+      const buffer = context.createBuffer(1, context.sampleRate * 6, context.sampleRate);
+      const samples = buffer.getChannelData(0);
+      for (let index = 0; index < samples.length; index++) samples[index] = Math.random() * 2 - 1;
+      const noise = context.createBufferSource(); noise.buffer = buffer; noise.loop = true;
+      const filter = context.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 320;
+      const level = context.createGain(); level.gain.value = 0.045;
+      noise.connect(filter).connect(level).connect(master); noise.start();
+      this.sources.push(noise); this.nodes.push(noise, filter, level);
+    }
+
+    private toggle = () => {
+      try {
+        if (!this.context) this.createSound();
+        this.enabled = !this.enabled;
+        void this.sync();
+      } catch { this.fail(); }
+    };
+
+    private adjustVolume = () => {
+      if (this.context && this.master && this.dataset.state === 'playing') {
+        this.master.gain.setTargetAtTime(Number(this.volume?.value ?? 25) / 100, this.context.currentTime, 0.15);
+      }
+    };
+
+    private sync = async () => {
+      const version = ++this.operation;
+      clearTimeout(this.timer);
+      const context = this.context;
+      const playing = this.enabled && this.visible && !document.hidden;
+      try {
+        if (context && this.master) {
+          if (playing) {
+            await context.resume();
+            if (version !== this.operation || !this.isConnected) return;
+            this.master.gain.setTargetAtTime(Number(this.volume?.value ?? 25) / 100, context.currentTime, 0.6);
+          } else {
+            this.master.gain.setTargetAtTime(0, context.currentTime, 0.05);
+            this.timer = setTimeout(() => {
+              if (version === this.operation) void context.suspend().catch(() => {});
+            }, 240);
+          }
+        }
+        if (!this.isConnected) return;
+        this.dataset.state = playing ? 'playing' : this.enabled ? 'paused' : 'off';
+        this.button?.setAttribute('aria-pressed', String(this.enabled));
+        this.button?.setAttribute('aria-label', this.enabled ? 'Silenciar ambiente espacial' : 'Activar ambiente espacial');
+        this.querySelector('[data-audio-label]')!.textContent = playing ? 'Ambiente activado' : this.enabled ? 'Ambiente pausado' : 'Activar ambiente';
+        this.querySelector('label')!.hidden = !this.enabled;
+      } catch { this.fail(); }
+    };
+
+    private fail() {
+      this.enabled = false;
+      this.dataset.state = 'off';
+      this.button?.setAttribute('aria-pressed', 'false');
+      this.button?.setAttribute('aria-label', 'Activar ambiente espacial');
+      this.querySelector('[data-audio-label]')!.textContent = 'Reintentar audio';
+      this.querySelector('.audio-feedback')!.textContent = 'No se pudo activar el audio. Intenta de nuevo.';
+      void this.context?.suspend().catch(() => {});
+    }
+  }
+  if (!customElements.get('space-audio')) customElements.define('space-audio', SpaceAudio);
+</script>
+
+<style>
+  space-audio { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px; pointer-events: auto; margin: 0 20px 20px; color: #c5cfdd; }
+  button { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 10px 15px; border: 1px solid #bbc9e32b; border-radius: 24px; background: #0a101bc9; backdrop-filter: blur(12px); font-size: .7rem; color: inherit; cursor: pointer; }
+  button:hover { background: #202b3be0; border-color: #bbc9e36b; }
+  button:focus-visible, input:focus-visible { outline: 2px solid #d0dcec; outline-offset: 4px; }
+  [data-state='playing'] .sound-waves { opacity: 1; }
+  .sound-waves { opacity: .25; }
+  label { display: flex; align-items: center; gap: 8px; font-size: .65rem; }
+  label[hidden] { display: none; }
+  input { width: 72px; min-height: 44px; accent-color: #bdcce3; }
+  .audio-feedback { width: 100%; font-size: .65rem; }
+  .audio-feedback:empty { display: none; }
+  @media (max-width: 640px) { space-audio { margin-inline: 0; justify-content: flex-start; } }
+  @media (prefers-reduced-transparency: reduce) { button { backdrop-filter: none; background: #111927; } }
+</style>

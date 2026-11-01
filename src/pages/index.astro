@@ -2,8 +2,12 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import FeaturedProjects from '../components/sections/FeaturedProjects.astro';
-import AboutBento from '../components/sections/AboutBento.astro';
 import Stack from '../components/sections/Stack.astro';
 import Contact from '../components/sections/Contact.astro';
+import '../styles/motion.css';
 ---
-<BaseLayout><Hero /><FeaturedProjects /><AboutBento /><Stack /><Contact /></BaseLayout>
+<BaseLayout><Hero /><FeaturedProjects /><Stack /><Contact /></BaseLayout>
+
+<script>
+  import '../scripts/portfolio-motion';
+</script>

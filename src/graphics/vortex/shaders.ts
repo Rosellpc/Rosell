@@ -25,18 +25,22 @@ export const starVertex = /* glsl */ `
   uniform float uPixelRatio;
   attribute float aSize;
   attribute float aBrightness;
+  attribute vec3 aColor;
+  varying vec3 vColor;
   varying float vBrightness;
   void main() {
     vBrightness = aBrightness;
+    vColor = aColor;
     gl_PointSize = aSize * uPixelRatio;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 export const starFragment = /* glsl */ `
+  varying vec3 vColor;
   varying float vBrightness;
   void main() {
     float radius = length(gl_PointCoord - 0.5);
     float alpha = (1.0 - smoothstep(0.12, 0.5, radius)) * vBrightness;
-    gl_FragColor = vec4(vec3(0.90, 0.92, 0.96), alpha);
+    gl_FragColor = vec4(vColor, alpha);
   }
 `;

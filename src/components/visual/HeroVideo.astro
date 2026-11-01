@@ -1,0 +1,129 @@
+<hero-video data-state="static">
+  <img class="hero-video-poster" src="/media/hero-poster.webp" alt="" width="640" height="640" decoding="async" aria-hidden="true" />
+  <video muted loop playsinline preload="none" poster="/media/hero-poster.webp" tabindex="-1" disablepictureinpicture aria-hidden="true"></video>
+  <button type="button" data-video-toggle hidden aria-label="Pausar animación del Hero" aria-pressed="false">Pausar <span aria-hidden="true">Ⅱ</span></button>
+</hero-video>
+
+<script>
+  class HeroVideo extends HTMLElement {
+    private video?: HTMLVideoElement;
+    private toggle?: HTMLButtonElement;
+    private userPaused = false;
+    private status?: HTMLElement;
+    private observer?: IntersectionObserver;
+    private motion = matchMedia('(prefers-reduced-motion: reduce)');
+    private connection = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection;
+    private visible = false;
+    private failed = false;
+    private operation = 0;
+
+    connectedCallback() {
+      this.video = this.querySelector('video')!;
+      this.video.muted = true;
+      this.toggle = this.querySelector<HTMLButtonElement>('[data-video-toggle]')!;
+      this.toggle.addEventListener('click', this.togglePlayback);
+      const hero = this.closest('.hero-space');
+      this.status = hero?.querySelector<HTMLElement>('[data-video-status]') ?? undefined;
+      this.video.addEventListener('error', this.fail);
+      this.motion.addEventListener('change', this.sync);
+      this.connection?.addEventListener('change', this.sync);
+      document.addEventListener('visibilitychange', this.sync);
+      this.observer = new IntersectionObserver(entries => {
+        this.visible = entries[0].isIntersecting;
+        void this.sync();
+      }, { threshold: 0.05 });
+      this.observer.observe(this);
+      void this.sync();
+    }
+
+    disconnectedCallback() {
+      this.operation++;
+      this.observer?.disconnect();
+      this.video?.removeEventListener('error', this.fail);
+      this.toggle?.removeEventListener('click', this.togglePlayback);
+      this.motion.removeEventListener('change', this.sync);
+      this.connection?.removeEventListener('change', this.sync);
+      document.removeEventListener('visibilitychange', this.sync);
+      this.video?.pause();
+      this.video?.removeAttribute('src');
+      this.video?.load();
+    }
+
+
+    private fail = () => {
+      this.failed = true;
+      this.video?.pause();
+      this.dataset.state = 'fallback';
+      if (this.toggle) this.toggle.hidden = true;
+      if (this.status) this.status.textContent = 'No se pudo reproducir el fondo. Se muestra la imagen de portada.';
+    };
+
+    private togglePlayback = () => {
+      this.userPaused = !this.userPaused;
+      void this.sync();
+    };
+
+    private updateToggle() {
+      if (!this.toggle) return;
+      this.toggle.hidden = !['playing', 'paused'].includes(this.dataset.state ?? '');
+      this.toggle.setAttribute('aria-pressed', String(this.userPaused));
+      this.toggle.setAttribute('aria-label', this.userPaused ? 'Reanudar animación del Hero' : 'Pausar animación del Hero');
+      this.toggle.textContent = this.userPaused ? 'Reanudar ▷' : 'Pausar Ⅱ';
+    }
+
+    private sync = async () => {
+      const operation = ++this.operation;
+      const video = this.video;
+      if (!video || this.failed) return;
+      const staticOnly = this.motion.matches || this.connection?.saveData;
+      if (staticOnly) {
+        this.userPaused = false;
+        video.pause();
+        if (video.hasAttribute('src')) { video.removeAttribute('src'); video.load(); }
+        this.dataset.state = 'static';
+        this.updateToggle();
+        return;
+      }
+      if (!this.visible || document.hidden) {
+        video.pause();
+        this.dataset.state = 'idle';
+        this.updateToggle();
+        return;
+      }
+      if (this.userPaused) {
+        video.pause();
+        this.dataset.state = 'paused';
+        this.updateToggle();
+        return;
+      }
+      if (!video.hasAttribute('src')) video.src = '/media/hero-space.mp4';
+      this.dataset.state = 'loading';
+      try {
+        await video.play();
+        if (operation !== this.operation || !this.isConnected || this.failed) return;
+        this.dataset.state = 'playing';
+        this.updateToggle();
+        if (this.status) this.status.textContent = '';
+      } catch {
+        if (operation !== this.operation || this.failed) return;
+        video.pause();
+        this.dataset.state = 'fallback';
+        this.updateToggle();
+        if (this.status) this.status.textContent = 'Se muestra la imagen de portada porque no se pudo reproducir el fondo.';
+      }
+    };
+  }
+  if (!customElements.get('hero-video')) customElements.define('hero-video', HeroVideo);
+</script>
+
+<style>
+  hero-video { display: block; position: absolute; inset: 0; background: transparent; mix-blend-mode: screen; }
+  video, .hero-video-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; object-position: center; pointer-events: none; }
+  video { opacity: 0; transition: opacity .6s ease; }
+  hero-video[data-state='playing'] video, hero-video[data-state='paused'] video { opacity: .9; }
+  .hero-video-poster { opacity: .75; transition: opacity .6s ease; }
+  hero-video[data-state='playing'] .hero-video-poster, hero-video[data-state='paused'] .hero-video-poster { opacity: 0; }
+  [data-video-toggle] { position: absolute; right: 16px; bottom: 8px; padding: 10px 14px; min-height: 44px; border: 0; border-radius: 999px; background: #ffffff08; color: var(--muted); font-size: .68rem; transition: background-color .2s, color .2s; }
+  [data-video-toggle]:hover { background: #ffffff12; color: var(--text); }
+  @media (prefers-reduced-motion: reduce) { video, .hero-video-poster { transition: none; } }
+</style>

@@ -1,5 +1,4 @@
 ---
-import MeteorShower from './MeteorShower.astro';
 const stars = Array.from({ length: 120 }, () => ({
   x: Math.random() * 100,
   y: Math.random() * 100,
@@ -20,7 +19,6 @@ const stars = Array.from({ length: 120 }, () => ({
       ))
     }
   </div>
-  <MeteorShower variant="contact" />
   <button
     type="button"
     aria-label="Pausar animación de contacto"

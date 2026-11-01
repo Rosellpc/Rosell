@@ -15,6 +15,8 @@ npm run dev
 
 Abrir la URL local que muestra Astro (normalmente `http://localhost:4321`). En PowerShell con ejecución de scripts restringida, usar `npm.cmd` en lugar de `npm`.
 
+La configuración separa la caché de Vite por comando (`dev`, `sync` y `build`) para poder comprobar o compilar el sitio con el servidor de desarrollo abierto sin invalidar sus dependencias. Three.js y OrbitControls se precompilan al iniciar desarrollo para que el Laboratorio pueda cargarlos bajo demanda.
+
 ```sh
 npm run check  # Astro y TypeScript
 npm run build  # Validación y generación estática en dist/

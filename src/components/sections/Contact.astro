@@ -1,7 +1,7 @@
 ---
 import { profile } from "../../data/profile";
 import ContactCosmos from '../visual/ContactCosmos.astro';
-import BlackHoleButton from '../visual/BlackHoleButton.astro';
+import LiquidGlassLink from '../ui/LiquidGlassLink.astro';
 ---
 
 <section
@@ -12,10 +12,10 @@ import BlackHoleButton from '../visual/BlackHoleButton.astro';
 >
   <div class="contact-panel">
     <ContactCosmos />
-    <p class="eyebrow">04 / Siguiente paso</p>
+    <p class="eyebrow">03 / Siguiente paso</p>
     <h2 id="contact-title">Algo bueno empieza<br />con una conversación.</h2>
     <p>Busco sumarme a nuevos retos.</p>
-    <BlackHoleButton href={profile.emailComposeUrl} label="Escríbeme" target="_blank" />
+    <LiquidGlassLink href={profile.emailComposeUrl} label="Escríbeme" target="_blank" />
 
     <nav class="glass glass-navigation contact-links" aria-label="Redes y contacto">
       {

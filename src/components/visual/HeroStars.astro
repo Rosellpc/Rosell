@@ -1,0 +1,19 @@
+---
+// Same size/brightness range as the contact sky, rendered once without WebGL.
+let seed = 4217;
+const random = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; };
+const stars = Array.from({ length: 220 }, () => ({
+  x: random() * 100,
+  y: random() * 100,
+  size: 0.65 + Math.pow(random(), 3) * 1.2,
+  opacity: 0.2 + Math.pow(random(), 2) * 0.55,
+}));
+---
+<div class="hero-stars" aria-hidden="true">
+  {stars.map(star => <i style={`left:${star.x}%;top:${star.y}%;width:${star.size}px;height:${star.size}px;opacity:${star.opacity}`} />)}
+</div>
+<style>
+  .hero-stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; background: #020304; }
+  i { position: absolute; display: block; border-radius: 50%; background: #f0f0eb; }
+  @media (max-width: 640px) { i:nth-child(n+121) { display: none; } }
+</style>

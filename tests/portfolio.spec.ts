@@ -35,7 +35,7 @@ test('navegación, contenido y dimensiones adaptables', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Software que fluye.');
-  await expect(page.locator('vortex-scene')).toHaveAttribute('data-state', 'static');
+  await expect(page.locator('.presentation-portrait')).toBeVisible();
   await expect(page.locator('canvas')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
   await page.locator('.project-card').filter({ has: page.getByRole('heading', { name: 'RestaurantOS' }) }).getByRole('link', { name: 'Explorar proyecto' }).click();

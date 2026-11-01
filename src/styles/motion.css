@@ -1,0 +1,52 @@
+/* Short, one-time entrances are handled by portfolio-motion.ts.
+   These interactions use the same restrained movement and glass palette. */
+@media (prefers-reduced-motion: no-preference) {
+  .project-card {
+    transition: transform .35s cubic-bezier(.22, 1, .36, 1), border-color .3s, box-shadow .3s;
+  }
+  .architecture-node {
+    transition: transform .4s cubic-bezier(.22, 1, .36, 1), border-color .3s;
+  }
+  .text-link > span, .project-arrow, .nav-contact > span {
+    display: inline-block;
+    transition: transform .25s ease, color .25s ease;
+  }
+  .nav-links a, .contact-links a {
+    transition: color .2s ease, background-color .2s ease;
+  }
+  .presentation-portrait {
+    transition: transform .7s cubic-bezier(.22, 1, .36, 1), box-shadow .5s ease;
+  }
+  .stack-column .tags li, .presentation-stack li {
+    transition: border-color .25s ease, color .25s ease, background-color .25s ease;
+  }
+  .project-card:focus-within {
+    border-color: #ffffff35;
+    box-shadow: inset 0 1px 0 #ffffff15, 0 22px 48px #00000024;
+  }
+  .text-link:focus-visible > span, .nav-contact:focus-visible > span {
+    transform: translate(3px, -2px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .project-card:hover {
+    transform: translateY(-3px);
+    border-color: #ffffff35;
+    box-shadow: inset 0 1px 0 #ffffff15, 0 22px 48px #00000024;
+  }
+  .project-card:hover .architecture-node { transform: translateY(-3px); border-color: #ffffff30; }
+  .project-card:hover .main-node { transform: translateY(-6px); border-color: #ffffff50; }
+  .text-link:hover > span, .project-copy h3 a:hover .project-arrow, .nav-contact:hover > span {
+    transform: translate(3px, -2px);
+  }
+  .presentation-portrait:hover {
+    transform: scale(1.025);
+    box-shadow: 0 0 0 7px #ffffff03, 0 18px 40px #00000030;
+  }
+  .stack-column:hover .tags li, .presentation-stack li:hover {
+    border-color: #ffffff28;
+    background-color: #ffffff05;
+    color: var(--text);
+  }
+}
