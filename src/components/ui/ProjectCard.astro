@@ -1,25 +1,45 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import GlassCard from './GlassCard.astro';
+import ProjectImage from './ProjectImage.astro';
 interface Props { project: CollectionEntry<'projects'>; index: number; }
 const { project, index } = Astro.props;
+const gallery = project.data.gallery;
 ---
 <GlassCard class="project-card">
-  <div class="project-art" aria-hidden="true">
+  {gallery.length > 0 ? <div class="project-art project-art-gallery" aria-label={`Capturas de ${project.data.title}`}>
+    <div class="project-screenshots">
+      {gallery.slice(0, 2).map((shot, shotIndex) => <figure class={`project-screenshot project-screenshot-${shotIndex + 1}`}>
+        <ProjectImage src={shot.src} alt={shot.alt} />
+      </figure>)}
+    </div>
+    <span class="art-caption">Sistema / {String(index + 1).padStart(2, '0')}</span>
+  </div> : <div class="project-art" aria-hidden="true">
     <div class="architecture-node">Interfaz <span>{project.data.architecture[0]}</span></div>
     <div class="architecture-line"></div>
     <div class="architecture-node main-node">API <span>{project.data.architecture[1]}</span></div>
     <div class="architecture-line"></div>
     <div class="architecture-node">{project.id === 'restaurantos' ? 'Datos' : 'Acceso'} <span>{project.data.architecture[2]}</span></div>
     <span class="art-caption">Sistema / {String(index + 1).padStart(2, '0')}</span>
-  </div>
+  </div>}
   <div class="project-copy">
     <p class="eyebrow">{project.data.category}</p>
     <h3><a href={`/proyectos/${project.id}/`}>{project.data.title}<span class="project-arrow" aria-hidden="true">↗</span></a></h3>
     <p>{project.data.description}</p>
-    {project.data.contribution && <p class="project-contribution"><strong>Mi aporte:</strong> {project.data.contribution}</p>}
-    {project.data.status && <p class="project-status">{project.data.status}</p>}
     <ul class="tags" aria-label="Tecnologías">{project.data.technologies.map(item => <li>{item}</li>)}</ul>
     <a class="text-link" href={`/proyectos/${project.id}/`}>Explorar proyecto <span aria-hidden="true">↗</span></a>
   </div>
 </GlassCard>
+
+<style>
+  .project-art-gallery { overflow: hidden; padding: 42px 30px; }
+  .project-screenshots { position: relative; width: min(100%, 620px); aspect-ratio: 1.72; }
+  .project-screenshot { position: absolute; margin: 0; overflow: hidden; border: 1px solid #ffffff35; border-radius: 14px; background: #171717; box-shadow: 0 18px 42px #0008; }
+  .project-screenshot-1 { top: 0; left: 0; width: 86%; height: 86%; z-index: 1; }
+  .project-screenshot-2 { right: 0; bottom: 0; width: 58%; height: 58%; z-index: 2; }
+  .project-screenshot :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  @media (max-width: 640px) {
+    .project-art-gallery { min-height: 250px; padding: 36px 22px; }
+    .project-screenshot { border-radius: 10px; }
+  }
+</style>

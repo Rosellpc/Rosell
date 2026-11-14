@@ -4,7 +4,7 @@ const emailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeU
 
 export const profile = {
   name: 'Rosell',
-  brand: 'rosellpc',
+  brand: 'rosell',
   role: 'Desarrollador Full Stack',
   location: 'Cusco, Perú',
   email,

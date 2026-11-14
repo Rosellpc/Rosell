@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import portrait from "../../assets/profile/foto-profile.png";
+import portrait from "../../assets/profile/foto-profile-transparent.png";
 import { profile } from "../../data/profile";
 import LiquidGlassLink from "../ui/LiquidGlassLink.astro";
 import HeroVideo from "../visual/HeroVideo.astro";
@@ -163,13 +163,16 @@ import HeroVideo from "../visual/HeroVideo.astro";
       width: min(100%, 360px);
       height: auto;
       aspect-ratio: 1;
-      object-fit: cover;
+      object-fit: contain;
       object-position: 50% 20%;
       filter: grayscale(1);
-      border: 1px solid #ffffff20;
-      border-radius: 50%;
-      background: var(--surface);
-      box-shadow: 0 12px 28px #00000024;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .presentation-portrait:hover {
+      box-shadow: none;
     }
     .portrait-action {
       justify-content: center;

@@ -13,11 +13,10 @@ function register(selector: string, stagger = 0, groupSize = 1) {
 register('.presentation-intro > *', 65, 5);
 register('.presentation-portrait-area');
 register('.presentation-story-heading, .presentation-story-copy', 90, 2);
-register('#proyectos .section-heading, #stack .section-heading');
+register('#proyectos .section-heading, #stack .section-heading, #contacto .section-heading');
 register('.project-card');
 register('.project-grid-item', 70, 3);
 register('.stack-column', 80, 3);
-register('.contact-panel > .eyebrow, .contact-panel > h2, .contact-panel > p:not(.eyebrow), .contact-panel > a, .contact-links', 65, 5);
 
 function reveal(element: HTMLElement) {
   seen.add(element);

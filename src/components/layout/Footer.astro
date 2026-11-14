@@ -1,11 +1,25 @@
 ---
-import { profile } from "../../data/profile";
+import { profile } from '../../data/profile';
+import SocialIcon from '../ui/SocialIcon.astro';
 ---
-
 <footer class="site-footer wrap">
   <a class="brand" href="/">{profile.brand}.</a>
-  <a class="brand" href="/certificados/"> certificados</a>
-
+  <nav class="footer-socials" aria-label="Redes y contacto">
+    {profile.socials.map((social) => (
+      <a href={social.url} aria-label={social.label} title={social.label} target="_blank" rel="noopener noreferrer">
+        <SocialIcon label={social.label} size={18} />
+      </a>
+    ))}
+  </nav>
   <p>© {new Date().getFullYear()} {profile.name}</p>
   <a href="#contenido">Volver arriba <span aria-hidden="true">↑</span></a>
 </footer>
+
+<style>
+  .footer-socials { display: flex; align-items: center; gap: 10px; }
+  .footer-socials a { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 50%; color: #fff; transition: background-color .2s ease, opacity .2s ease; }
+  .footer-socials a:hover { background: #ffffff12; opacity: .78; }
+  .footer-socials a:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+  @media (max-width: 640px) { .footer-socials { margin-right: auto; } }
+  @media (prefers-reduced-motion: reduce) { .footer-socials a { transition: none; } }
+</style>
