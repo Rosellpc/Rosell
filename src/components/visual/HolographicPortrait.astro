@@ -30,9 +30,6 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
       {particles.map(p => <i style={`--x:${p.x}%;--y:${p.y}%;--delay:${p.delay}s`}></i>)}
     </div>
   </div>
-  <button class="motion-toggle" type="button" aria-pressed="false" hidden>
-    Pausar animación <span aria-hidden="true">Ⅱ</span>
-  </button>
 </holographic-portrait>
 
 <style>
@@ -157,22 +154,6 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
     opacity: .3;
     animation: drift 7s var(--delay) ease-in-out infinite;
   }
-  .motion-toggle {
-    display: block;
-    margin: 0 12px 0 auto;
-    min-height: 44px;
-    padding: 10px 14px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: #ffffff08;
-    color: var(--muted);
-    font: inherit;
-    font-size: .68rem;
-    cursor: pointer;
-  }
-  .motion-toggle[hidden] { display: none; }
-  .motion-toggle:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-  .motion-toggle span { margin-left: 8px; }
   .hologram-float, .hologram-photo, .portrait-aura, .particles i, .scan-plane::after { animation-play-state: paused; }
   [data-running='true'] .hologram-float, [data-running='true'] .hologram-photo, [data-running='true'] .portrait-aura, [data-running='true'] .particles i, [data-running='true'] .scan-plane::after { animation-play-state: running; }
   /* One shared cycle: two complete turns, first sharp and then defocused. */
@@ -202,7 +183,6 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
     .hologram-float, .hologram-photo, .portrait-aura, .particles i, .scan-plane::after { animation: none; }
     .scan-plane { display: none; }
     .hologram-cube { transition: none; transform: rotateX(-9deg) rotateY(-18deg); }
-    .motion-toggle { display: none; }
   }
 </style>
 
@@ -210,12 +190,10 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
   class HolographicPortrait extends HTMLElement {
     private cleanup?: () => void;
     connectedCallback() {
-      const button = this.querySelector<HTMLButtonElement>('button')!;
       const stage = this.querySelector<HTMLElement>('.hologram-stage')!;
       const reduced = matchMedia('(prefers-reduced-motion: reduce)');
       const pointer = matchMedia('(hover: hover) and (pointer: fine) and (min-width: 761px)');
       const events = new AbortController();
-      let paused = false;
       let visible = false;
       let frame = 0;
       const reset = () => {
@@ -224,15 +202,11 @@ const particles = Array.from({ length: 12 }, (_, i) => ({
         this.style.removeProperty('--tilt-y');
       };
       const sync = () => {
-        this.dataset.running = String(!paused && visible && !document.hidden && !reduced.matches);
-        button.hidden = reduced.matches;
-        button.setAttribute('aria-pressed', String(paused));
-        button.textContent = paused ? 'Reanudar animación ▷' : 'Pausar animación Ⅱ';
+        this.dataset.running = String(visible && !document.hidden && !reduced.matches);
         if (this.dataset.running !== 'true' || !pointer.matches) reset();
       };
       const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: .1 });
       observer.observe(this);
-      button.addEventListener('click', () => { paused = !paused; sync(); }, { signal: events.signal });
       reduced.addEventListener('change', sync, { signal: events.signal });
       pointer.addEventListener('change', sync, { signal: events.signal });
       document.addEventListener('visibilitychange', sync, { signal: events.signal });

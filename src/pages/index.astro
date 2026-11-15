@@ -1,13 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
-import FeaturedProjects from '../components/sections/FeaturedProjects.astro';
-import Stack from '../components/sections/Stack.astro';
+import ProjectShowcase from '../components/sections/ProjectShowcase.astro';
 import Contact from '../components/sections/Contact.astro';
 import '../styles/motion.css';
+import '../styles/home-screens.css';
 ---
-<BaseLayout><Hero /><FeaturedProjects /><Stack /><Contact /></BaseLayout>
+<BaseLayout home><Hero /><ProjectShowcase /><Contact /></BaseLayout>
 
 <script>
   import '../scripts/portfolio-motion';
+  import '../scripts/home-navigation';
 </script>

@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import { projectGallery } from '../../data/project-gallery';
+import ProjectImage from '../ui/ProjectImage.astro';
+const featured = (await getCollection('projects', ({data}) => data.featured)).sort((a,b) => a.data.order - b.data.order);
+const projects = [
+  ...featured.map(p => ({ title: p.data.title, description: p.data.description, category: p.data.category, technologies: p.data.technologies, href: `/proyectos/${p.id}/`, caseStudy: true, gallery: p.data.gallery.length ? p.data.gallery : p.data.preview ? [{src: p.data.preview, alt: p.data.previewAlt ?? p.data.title}] : [], demo: p.data.demo })),
+  ...projectGallery.map(p => ({ ...p, category: p.caseStudy ? 'Caso de estudio' : 'Aplicación web', gallery: p.preview ? [{src: p.preview, alt: `Vista de ${p.title}`}] : [], demo: undefined })),
+];
+---
+<section id="proyectos" class="screen-panel projects-screen" aria-labelledby="projects-title">
+  <div class="screen-inner wrap">
+    <div class="section-heading"><h2 id="projects-title" class="eyebrow">Proyectos</h2></div>
+    <project-showcase role="region" aria-roledescription="carrusel" aria-label="Proyectos seleccionados">
+      <div class="project-viewport">
+      <div class="project-track" id="project-track" tabindex="0" aria-label="Galería de proyectos; usa las flechas izquierda y derecha">
+        {projects.map((p,i) => <article class="showcase-card" data-slide={i} role="group" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${projects.length}: ${p.title}`}>
+          <div class="showcase-content">
+          <div class:list={['showcase-art', {'two-shots': p.gallery.length > 1}]}>
+            {p.gallery.slice(0,2).map((shot, index) => <figure class={`showcase-shot shot-${index}`}><ProjectImage src={shot.src} alt={shot.alt} sizes="(max-width: 760px) calc(100vw - 144px), (max-width: 1100px) calc(100vw - 240px), 540px" /></figure>)}
+          </div>
+          <div class="showcase-copy">
+            <p class="eyebrow">{p.category}</p>
+            <h3>{p.title}</h3>
+            <p class="showcase-description">{p.description}</p>
+            <ul class="tags" aria-label="Tecnologías">{p.technologies.map(t => <li>{t}</li>)}</ul>
+            <div class="showcase-links">
+              <a class="text-link project-button" href={p.href} target={p.caseStudy ? undefined : '_blank'} rel={p.caseStudy ? undefined : 'noopener noreferrer'}>{p.caseStudy ? 'Explorar proyecto' : 'Abrir proyecto'} <span aria-hidden="true">↗</span></a>
+              {p.demo && <a class="text-link" href={p.demo} target="_blank" rel="noopener noreferrer">Ver demo <span aria-hidden="true">↗</span></a>}
+            </div>
+          </div>
+          </div>
+        </article>)}
+      </div>
+      </div>
+      <div class="project-controls">
+        <button class="carousel-arrow previous" type="button" data-previous aria-label="Proyecto anterior" aria-controls="project-track"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 6-6 6 6 6" /></svg></button>
+        <button class="carousel-arrow next" type="button" data-next aria-label="Proyecto siguiente" aria-controls="project-track"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 6 6 6-6 6" /></svg></button>
+      </div>
+    </project-showcase>
+    <a class="screen-next text-link" href="#contacto">Sigamos en contacto <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+<style>
+  project-showcase { display: block; min-width: 0; position: relative; }
+  .project-viewport { position: relative; overflow: hidden; border-radius: var(--radius); }
+  @media (min-width: 1101px) {
+    project-showcase { width: 105%; margin-inline: -2.5%; }
+    .project-track { min-height: var(--desktop-card-height, auto); }
+  }
+  .project-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: var(--radius); }
+  .showcase-card { flex: 0 0 100%; min-width: 0; display: flex; align-items: center; scroll-snap-align: start; scroll-snap-stop: always; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(135deg, #ffffff07, #ffffff02); overflow: hidden; }
+  .showcase-content { width: 100%; min-width: 0; display: grid; grid-template-columns: 1.05fr 1fr; }
+  .showcase-art { min-width: 0; position: relative; display: flex; align-items: center; padding: 60px 33.6px; background: radial-gradient(ellipse at center, #3434344f, transparent 75%); }
+  .showcase-shot { width: 100%; margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .showcase-shot :global(img) { width: 100%; height: clamp(350px, 43svh, 460px); object-fit: cover; object-position: top; background: #171717; }
+  .two-shots .shot-0 { width: 90%; transform: translateY(-12px); }
+  .two-shots .shot-1 { position: absolute; width: 55%; right: 18px; bottom: 36px; box-shadow: 0 12px 30px #0008; }
+  .two-shots .shot-1 :global(img) { height: clamp(160px, 21svh, 210px); object-fit: cover; object-position: top; }
+  .showcase-copy { min-width: 0; padding: clamp(54px, 6svh, 72px) clamp(28.8px, 3.6vw, 48px); align-self: center; }
+  .showcase-copy .eyebrow { font-size: .6rem; margin-bottom: 16px; }
+  .showcase-copy h3 { font-size: clamp(1.5rem, 2.5vw, 2rem); }
+  .showcase-description { font-size: .88rem; line-height: 1.75; margin-top: 18px; }
+  .tags { margin: 20px 0 12px; gap: 6px; }
+  .showcase-links { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+  .showcase-links a { min-height: 44px; }
+  .screen-next { display: flex; justify-content: flex-end; margin-top: 32px; min-height: 48px; }
+  .project-button { padding: 14px 24px; border: 1px solid #ffffff30; border-radius: 999px; background: #e9e6dd; color: #171717; text-decoration: none; justify-content: center; box-shadow: 0 6px 20px #0002; transition: background .2s, transform .2s; }
+  .project-button:hover { background: #fff; color: #171717; transform: translateY(-2px); }
+  .project-controls { display: none; }
+  project-showcase[data-ready] .project-controls { display: block; }
+  .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid #ffffff26; border-radius: 50%; background: #242424ed; color: var(--text); box-shadow: 0 8px 24px #0005; cursor: pointer; transition: background .2s, border-color .2s; }
+  .carousel-arrow:hover { background: #3a3a3a; border-color: #ffffff70; }
+  .carousel-arrow:focus-visible, .project-button:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+  .previous { left: -24px; }
+  .next { right: -24px; }
+  @media (max-width: 1500px) {
+    .carousel-arrow { width: 44px; height: 44px; }
+    .previous { left: 10px; }
+    .next { right: 10px; }
+  }
+  @media (max-width: 1100px) {
+    .showcase-content { grid-template-columns: 1fr; }
+    .showcase-art { padding: 32px 24px; }
+    .showcase-shot :global(img) { height: clamp(260px, 38vw, 380px); }
+    .showcase-copy { padding: 28px 32px 40px; }
+    .two-shots .shot-1 { bottom: 16px; }
+    .carousel-arrow { top: 150px; transform: none; }
+  }
+  @media (max-width: 760px) {
+    .showcase-content { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+    .showcase-art { padding: 24px 16px; }
+    .showcase-shot :global(img) { height: clamp(220px, 50vw, 320px); }
+    .two-shots .shot-0 { width: 100%; transform: none; }
+    .two-shots .shot-1 { width: 58%; bottom: 8px; right: 12px; }
+    .two-shots .shot-1 :global(img) { height: clamp(110px, 25vw, 160px); }
+    .showcase-copy { padding: 28px 24px 36px; }
+    .showcase-copy .eyebrow { margin-bottom: 10px; font-size: .54rem; }
+    .showcase-description { margin-top: 12px; font-size: .8rem; line-height: 1.6; }
+    .tags { margin: 12px 0 4px; }
+    .tags li { font-size: .59rem; padding: 3px 8px; }
+    .screen-next { margin-top: 28px; }
+    .showcase-links { margin-top: 28px; gap: 16px; }
+    .project-button { width: 100%; padding-inline: 16px; }
+    .carousel-arrow { top: 120px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .project-button, .carousel-arrow { transition: none; } .project-button:hover { transform: none; } }
+</style>
+<script>
+  import '../../scripts/project-showcase';
+</script>

@@ -1,0 +1,30 @@
+/* The document remains the scroll container: mouse, touch, anchors and keyboard
+   share native snapping. Oversized sections can still be read without clipping. */
+html.homepage { scroll-snap-type: y mandatory; scroll-padding-top: 0; }
+html.homepage:has(dialog[open]) { overflow: hidden; }
+.homepage { --screen-top: 110px; --screen-bottom: max(28px, env(safe-area-inset-bottom)); }
+.homepage .screen-panel {
+  min-height: 100svh;
+  padding-block: var(--screen-top) var(--screen-bottom);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  scroll-margin-top: 0;
+  position: relative;
+}
+.homepage .projects-screen { display: grid; align-content: center; padding-top: calc(var(--screen-top) * 1.2); }
+.homepage .screen-inner { min-width: 0; }
+.homepage .projects-screen .section-heading { margin-bottom: 24px; }
+.homepage .projects-screen .section-heading .eyebrow { margin-bottom: 12px; }
+.homepage .nav-links a[aria-current='location'] { color: var(--text); background: #ffffff0b; }
+.homepage select:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+@media (max-width: 760px) {
+  .homepage { --screen-top: 92px; --screen-bottom: max(20px, env(safe-area-inset-bottom)); }
+  .homepage .projects-screen .section-heading { gap: 8px; margin-bottom: 18px; }
+  .homepage .projects-screen #projects-title { font-size: .66rem; }
+}
+@media (max-height: 600px) and (min-width: 761px) {
+  .homepage { --screen-top: 92px; --screen-bottom: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html.homepage { scroll-behavior: auto; scroll-snap-type: y proximity; }
+}

@@ -1,24 +1,20 @@
 ---
-import HeroPresentation from "./HeroPresentation.astro";
-import { profile } from "../../data/profile";
+import HeroPresentation from './HeroPresentation.astro';
+import { profile } from '../../data/profile';
 ---
-
-<section class="hero hero-space" aria-labelledby="hero-title">
+<section id="inicio" class="screen-panel hero-space" aria-labelledby="hero-title">
   <div class="hero-content wrap">
     <HeroPresentation />
-    <div class="hero-foot">
+  </div>
+  <div class="hero-foot wrap">
       <span>{profile.location} <span aria-hidden="true">/</span> Trabajo remoto</span>
-      <a href="#proyectos">Desplázate para descubrir <span aria-hidden="true">↓</span></a>
-    </div>
+      <a href="#proyectos">Descubre los proyectos <span aria-hidden="true">↓</span></a>
   </div>
 </section>
-
 <style>
-  .hero-space { position: relative; display: block; padding: 0; min-height: auto; }
-  .hero-content { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 28px; padding: 145px 0 40px; }
-  .hero-foot { padding-top: 0; color: var(--muted); }
-  @media (max-width: 760px) {
-    .hero-content { gap: 24px; padding: 115px 0 32px; }
-    .hero-foot { align-items: end; line-height: 1.8; }
-  }
+  .hero-space { display: flex; flex-direction: column; gap: 24px; --screen-bottom: max(12px, env(safe-area-inset-bottom)); }
+  .hero-content { display: grid; align-items: center; flex: 1; min-width: 0; }
+  .hero-foot { padding: 0; margin-top: auto; color: var(--muted); align-items: center; flex-shrink: 0; background: none; border: 0; box-shadow: none; }
+  .hero-foot a { display: inline-flex; align-items: center; min-height: 44px; }
+  @media (max-width: 760px) { .hero-space { gap: 16px; } .hero-foot { font-size: .58rem; gap: 12px; } }
 </style>

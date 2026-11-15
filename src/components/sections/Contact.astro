@@ -2,34 +2,25 @@
 import { profile } from '../../data/profile';
 import SocialIcon from '../ui/SocialIcon.astro';
 ---
-<section id="contacto" class="section wrap" aria-labelledby="contact-title">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">03 / Contacto</p>
-    </div>
+<section id="contacto" class="screen-panel contact-screen" aria-labelledby="contact-title">
+  <div class="contact-body wrap">
+    <div class="section-heading"><p class="eyebrow">03 / Contacto</p><h2 id="contact-title">¿Hablamos?</h2></div>
+    <nav class="contact-socials" aria-label="Redes y contacto">
+      {profile.socials.map(social => <a href={social.url} aria-label={social.label} title={social.label} target="_blank" rel="noopener noreferrer"><SocialIcon label={social.label} /></a>)}
+    </nav>
   </div>
-
-  <nav class="contact-socials" aria-label="Redes y contacto">
-    {profile.socials.map((social) => (
-      <a href={social.url} aria-label={social.label} title={social.label} target="_blank" rel="noopener noreferrer">
-        <SocialIcon label={social.label} />
-      </a>
-    ))}
-  </nav>
 </section>
-
 <style>
-  .section-heading { align-items: center; flex-direction: column; gap: 14px; text-align: center; }
-  .section-heading .eyebrow { margin-bottom: 18px; }
-  .section-heading > p { max-width: 360px; }
-  .contact-socials { display: flex; align-items: center; justify-content: center; gap: 28px; margin-top: 38px; }
-  .contact-socials a { display: grid; width: 54px; height: 54px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: #fff; transition: background-color .2s ease, border-color .2s ease, transform .2s ease; }
+  .contact-screen { display: flex; flex-direction: column; }
+  .contact-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-block: 36px; }
+  .section-heading { align-items: center; flex-direction: column; gap: 16px; margin: 0; text-align: center; }
+  .section-heading .eyebrow { margin: 0; }
+  .contact-socials { display: flex; align-items: center; justify-content: center; gap: 32px; margin-top: 38px; }
+  .contact-socials a { display: grid; width: 56px; height: 56px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: #fff; transition: background-color .2s ease, border-color .2s ease, transform .2s ease; }
   .contact-socials a:hover { transform: translateY(-3px); border-color: #ffffff55; background: #ffffff0b; }
   .contact-socials a:focus-visible { outline: 2px solid #efefec; outline-offset: 4px; }
   @media (max-width: 640px) {
-    .section-heading { gap: 12px; }
-    .contact-socials { gap: 24px; margin-top: 30px; }
-    .contact-socials a { width: 50px; height: 50px; }
+    .contact-socials { gap: 28px; }
   }
   @media (prefers-reduced-motion: reduce) { .contact-socials a { transition: none; } }
 </style>

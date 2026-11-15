@@ -1,0 +1,54 @@
+---
+import { skills } from '../../data/profile';
+---
+<profile-details>
+  <button class="details-trigger text-link" type="button" aria-haspopup="dialog" hidden>Mi enfoque y herramientas <span aria-hidden="true">↗</span></button>
+  <dialog aria-labelledby="profile-details-title">
+    <div class="dialog-heading">
+      <p class="eyebrow">Mi forma de trabajar</p>
+      <form method="dialog"><button class="close-dialog" aria-label="Cerrar panel">✕</button></form>
+    </div>
+    <h2 id="profile-details-title">Entender primero.<br />Construir con intención.</h2>
+    <p class="details-intro">Empiezo por entender lo que necesitas para crear una experiencia clara. Desde la interfaz hasta el backend, cuido los permisos, la persistencia y la integridad de los datos.</p>
+    <div class="tools-grid">
+      {skills.map(group => <article><h3>{group.title}</h3><p>{group.description}</p><ul class="tags">{group.items.map(item => <li>{item}</li>)}</ul></article>)}
+    </div>
+    <a class="text-link" href="/certificados/">Ver certificados <span aria-hidden="true">↗</span></a>
+  </dialog>
+  <noscript><details><summary>Mi enfoque y herramientas</summary><p>Entender primero. Construir con intención.</p>{skills.map(group => <p><strong>{group.title}:</strong> {group.items.join(', ')}</p>)}</details></noscript>
+</profile-details>
+<style>
+  profile-details { display: block; }
+  .details-trigger { font-size: .68rem; border: 0; background: transparent; text-align: left; min-height: 44px; }
+  .details-trigger[hidden] { display: none; }
+  dialog { width: min(860px, calc(100% - 32px)); max-height: calc(100svh - 48px); padding: clamp(24px, 4vw, 48px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); color: var(--text); overscroll-behavior: contain; }
+  dialog::backdrop { background: #000a; backdrop-filter: blur(8px); }
+  .dialog-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+  .dialog-heading .eyebrow { margin: 0; }
+  .close-dialog { width: 44px; height: 44px; border-radius: 50%; background: transparent; border: 1px solid var(--line); color: var(--text); }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .details-intro { margin-top: 24px; max-width: 620px; font-size: .9rem; }
+  .tools-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 36px; }
+  h3 { font-size: 1.1rem; margin-bottom: 12px; }
+  .tools-grid p { font-size: .78rem; }
+  .tags { margin: 18px 0; }
+  @media (max-width: 640px) { .tools-grid { grid-template-columns: 1fr; gap: 16px; } }
+</style>
+<script>
+  class ProfileDetails extends HTMLElement {
+    private events?: AbortController;
+    connectedCallback() {
+      this.events = new AbortController();
+      const dialog = this.querySelector('dialog')!;
+      const trigger = this.querySelector<HTMLButtonElement>('.details-trigger')!;
+      trigger.hidden = false;
+      trigger.addEventListener('click', () => dialog.showModal(), { signal: this.events.signal });
+      dialog.addEventListener('click', event => {
+        const rect = dialog.getBoundingClientRect();
+        if (event.target === dialog && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom)) dialog.close();
+      }, { signal: this.events.signal });
+    }
+    disconnectedCallback() { this.events?.abort(); }
+  }
+  if (!customElements.get('profile-details')) customElements.define('profile-details', ProfileDetails);
+</script>

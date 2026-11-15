@@ -1,18 +1,20 @@
 ---
 import { profile } from '../../data/profile';
-const inLab = Astro.url.pathname.startsWith('/lab');
+const home = Astro.url.pathname === '/';
+const items = [
+  {id: 'inicio', label: 'Inicio', icon: 'M3 10 12 3l9 7v11h-6v-7H9v7H3Z'},
+  {id: 'proyectos', label: 'Proyectos', icon: 'M3 3h7v7H3Zm11 0h7v7h-7ZM3 14h7v7H3Zm11 0h7v7h-7Z'},
+  {id: 'contacto', label: 'Contacto', icon: 'M3 5h18v14H3Zm0 1 9 7 9-7'},
+];
 ---
 <header class="site-header">
+  <a class="brand" href={home ? '#inicio' : '/'} aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true">.</span></a>
   <nav class="navigation" aria-label="Navegación principal">
-    <a class="brand" href="/" aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true">.</span></a>
     <div class="nav-links">
-      <a href="/#proyectos">Proyectos</a>
-      <a href="/lab/vortex/" aria-current={inLab ? 'page' : undefined}>Laboratorio</a>
-      <a class="nav-contact" href="/#contacto">Hablemos <span aria-hidden="true">↗</span></a>
+      {items.map(item => <a href={home ? `#${item.id}` : `/#${item.id}`} data-screen={home ? item.id : undefined} aria-label={item.label} title={item.label} aria-current={home && item.id === 'inicio' ? 'location' : undefined}>
+        <svg class="nav-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={item.icon} /></svg>
+        <span class="nav-label">{item.label}</span>
+      </a>)}
     </div>
   </nav>
 </header>
-
-<style>
-  .navigation { border: 0; background: transparent; box-shadow: none; }
-</style>
