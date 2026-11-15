@@ -28,7 +28,7 @@ const unlockAfterGesture = () => {
 window.addEventListener('wheel', event => {
   if (event.ctrlKey || event.metaKey || event.shiftKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY) || !event.deltaY) return;
   const target = event.target instanceof Element ? event.target : undefined;
-  if (document.querySelector('dialog[open]') || target?.closest('.site-sidebar, select, textarea, input, [contenteditable="true"]')) return;
+  if (document.documentElement.classList.contains('sidebar-open') || document.querySelector('dialog[open]') || target?.closest('.site-sidebar, select, textarea, input, [contenteditable="true"]')) return;
   if (locked) { event.preventDefault(); unlockAfterGesture(); return; }
   const direction = Math.sign(event.deltaY);
   const current = panels.findIndex(panel => {

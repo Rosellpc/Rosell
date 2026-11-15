@@ -3,13 +3,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { certificateGroups } from '../data/certificates';
 const total = certificateGroups.reduce((sum, group) => sum + group.items.length, 0);
 ---
-<BaseLayout title="Formación y certificados — Rosell" description="Certificados de formación de Rosell en desarrollo web, inglés, marketing y negocio digital.">
+<BaseLayout title="Formación y certificados — Rosell" description="Formación de Rosell en AI Software Engineer, LLMs, APIs, RAG y MCP, además de desarrollo web, inglés y negocio digital.">
   <div class="wrap certificates-page">
     <a class="text-link" href="/#sobre-mi">← Volver a sobre mí</a>
     <header class="certificates-header">
       <p class="eyebrow">Formación continua / {total} certificados</p>
       <h1>Aprender para construir.</h1>
-      <p>Desarrollo web como base. Inglés y negocio digital para ampliar mi perspectiva.</p>
+      <p>Desarrollo Full Stack e IA aplicada: formación para construir aplicaciones y conectar modelos de lenguaje con documentos y herramientas. Inglés y negocio digital complementan mi perspectiva.</p>
     </header>
     <nav class="certificate-nav" aria-label="Áreas de formación">
       {certificateGroups.map(group => <a class="button button-secondary" href={`#${group.id}`}>{group.title} <span aria-hidden="true">↓</span></a>)}

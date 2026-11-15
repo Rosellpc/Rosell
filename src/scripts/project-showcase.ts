@@ -26,7 +26,7 @@ class ProjectShowcase extends HTMLElement {
       clearTimeout(timer);
       const playing = canPlay();
       this.dataset.autoplay = playing ? 'playing' : 'paused';
-      if (playing && !moving) timer = setTimeout(() => { void go((current + 1) % slides.length, true); }, 9000);
+      if (playing && !moving) timer = setTimeout(() => { void go((current + 1) % slides.length, true); }, 2000);
     };
     const update = () => {
       if (width !== track.clientWidth) return;
@@ -47,7 +47,7 @@ class ProjectShowcase extends HTMLElement {
       const operation = transition;
       moving = true;
       if (!reduced.matches) {
-        animation = track.animate([{opacity: 1, transform: 'translateX(0)'}, {opacity: 0, transform: 'translateX(-36px)'}], {duration: 160, easing: 'cubic-bezier(.4, 0, 1, 1)', fill: 'forwards'});
+        animation = track.animate([{opacity: 1, transform: 'translateX(0)'}, {opacity: 0, transform: 'translateX(-36px)'}], {duration: 1200, easing: 'cubic-bezier(.4, 0, .6, 1)', fill: 'forwards'});
         await animation.finished.catch(() => {});
         if (operation !== transition || disposed) return;
         // Never replace the slide beneath a link that has just received focus.
@@ -57,7 +57,7 @@ class ProjectShowcase extends HTMLElement {
       update();
       animation?.cancel();
       if (!reduced.matches) {
-        animation = track.animate([{opacity: 0, transform: 'translateX(36px)'}, {opacity: 1, transform: 'translateY(0)'}], {duration: 300, easing: 'cubic-bezier(.22, 1, .36, 1)'});
+        animation = track.animate([{opacity: 0, transform: 'translateX(36px)'}, {opacity: 1, transform: 'translateX(0)'}], {duration: 1800, easing: 'cubic-bezier(.22, 1, .36, 1)'});
         await animation.finished.catch(() => {});
         if (operation !== transition || disposed) return;
       }

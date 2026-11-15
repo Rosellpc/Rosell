@@ -7,8 +7,8 @@ import ProfileDetails from './ProfileDetails.astro';
 <div id="sobre-mi" class="hero-presentation">
   <div class="presentation-intro">
     <p class="eyebrow presentation-eyebrow">{profile.name} <span aria-hidden="true">/</span> {profile.role}</p>
-    <h1 id="hero-title">Ideas claras.<br />Software que fluye.</h1>
-    <p class="hero-description">Soy Rosell. Desarrollo aplicaciones para negocios y herramientas de uso diario con React, TypeScript y Python.</p>
+    <h1 id="hero-title">Software útil.<br />IA con contexto.</h1>
+    <p class="hero-description">{profile.intro}</p>
     <div class="hero-actions">
       <LiquidGlassLink href="#proyectos" label="Ver proyectos" />
       <ProfileDetails />

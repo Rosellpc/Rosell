@@ -1,5 +1,15 @@
 export const certificateGroups = [
   {
+    id: 'ia', title: 'Inteligencia artificial aplicada',
+    items: [
+      { title: 'AI Software Engineer', file: 'AI-Engineer/diploma-ai-software-engineer', detail: 'Platzi · Ruta aprobada · 14 de noviembre de 2026' },
+      { title: 'Fundamentos de LLMs', file: 'AI-Engineer/diploma-llms', detail: 'Platzi · Curso aprobado · 29 de octubre de 2026' },
+      { title: 'Configuración de APIs de LLMs', file: 'AI-Engineer/diploma-llm-api-config', detail: 'Platzi · Curso aprobado · 13 horas · 5 de noviembre de 2026' },
+      { title: 'RAG con Microsoft Azure', file: 'AI-Engineer/diploma-rag', detail: 'Platzi · Curso aprobado · 12 horas · 12 de noviembre de 2026' },
+      { title: 'MCP con Microsoft Azure', file: 'AI-Engineer/diploma-mcp', detail: 'Platzi · Curso aprobado · 11 horas · 10 de noviembre de 2026' },
+    ],
+  },
+  {
     id: 'desarrollo', title: 'Desarrollo y diseño web',
     items: [
       { title: 'Desarrollo Frontend con React.js', file: 'desarrollo-frontend-react-js', detail: 'Platzi · Ruta aprobada · 2026' },

@@ -2,7 +2,14 @@
 import Navbar from './Navbar.astro';
 import Footer from './Footer.astro';
 ---
-<aside class="site-sidebar" aria-label="Navegación y enlaces de Rosell">
+<button class="sidebar-toggle" type="button" data-sidebar-toggle aria-label="Abrir menú" aria-expanded="false" aria-controls="site-sidebar">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+</button>
+<div class="sidebar-backdrop" data-sidebar-backdrop aria-hidden="true"></div>
+<aside id="site-sidebar" class="site-sidebar" aria-label="Navegación y enlaces de Rosell">
+  <button class="sidebar-close" type="button" data-sidebar-close aria-label="Cerrar menú"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg></button>
   <Navbar />
   <Footer />
 </aside>
+
+<script>import '../../scripts/mobile-sidebar';</script>

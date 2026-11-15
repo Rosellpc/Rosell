@@ -30,7 +30,8 @@ test('autoplay lateral, pausa por foco y retorno del último al primero', async 
   const leave=async()=>{
     await expect.poll(()=>track.evaluate(el=>el.getAnimations().length)).toBe(0);
     await page.clock.runFor(100);
-    await page.locator('.site-sidebar .brand').focus();
+    if ((await page.evaluate(()=>innerWidth)) <= 760) await page.getByRole('button',{name:'Abrir menú'}).focus();
+    else await page.locator('.site-sidebar .brand').focus();
     await page.mouse.move(5,5);
     await expect(root).toHaveAttribute('data-autoplay','playing');
   };
@@ -41,12 +42,12 @@ test('autoplay lateral, pausa por foco y retorno del último al primero', async 
     el.animate=((frames:any,options:any)=>{(window as any).carouselFrames.push({frames,options});return original(frames,options);}) as typeof el.animate;
   });
   await leave();
-  await page.clock.fastForward(9000);
+  await page.clock.fastForward(2000);
   await expect(active).toHaveAttribute('data-slide','1');
   const frames=await page.evaluate(()=>(window as any).carouselFrames);
   expect(frames[0].frames[1].transform).toBe('translateX(-36px)');
   expect(frames[1].frames[0].transform).toBe('translateX(36px)');
-  expect(frames[0].options.duration+frames[1].options.duration).toBe(460);
+  expect(frames[0].options.duration+frames[1].options.duration).toBe(3000);
   await track.focus();
   await expect(root).toHaveAttribute('data-autoplay','paused');
   await page.clock.fastForward(20000);
@@ -54,7 +55,7 @@ test('autoplay lateral, pausa por foco y retorno del último al primero', async 
   await page.keyboard.press('End');
   await expect(active).toHaveAttribute('data-slide','6');
   await leave();
-  await page.clock.fastForward(9000);
+  await page.clock.fastForward(2000);
   await expect(active).toHaveAttribute('data-slide','0');
   expect(errors).toEqual([]);
 });
@@ -67,6 +68,7 @@ test('sin autoplay fuera de pantalla o con movimiento reducido; teclado conserva
   await page.clock.fastForward(20000);
   await expect(root.locator('.showcase-card:not([inert])')).toHaveAttribute('data-slide','0');
   await page.emulateMedia({reducedMotion:'reduce'});
+  if ((await page.evaluate(()=>innerWidth)) <= 760) await page.getByRole('button',{name:'Abrir menú'}).click();
   await page.locator('[data-screen=proyectos]').click();
   await page.clock.fastForward(20000);
   await expect(root).toHaveAttribute('data-autoplay','paused');

@@ -4,7 +4,7 @@ import Sidebar from '../components/layout/Sidebar.astro';
 import '../styles/sidebar.css';
 import { profile } from '../data/profile';
 interface Props { title?: string; description?: string; home?: boolean; }
-const { home = false, title = `${profile.name} — Full Stack`, description = profile.description } = Astro.props;
+const { home = false, title = `${profile.name} — Full Stack e IA aplicada`, description = profile.description } = Astro.props;
 ---
 <!doctype html>
 <html lang="es" class:list={{ homepage: home }}>

@@ -17,7 +17,7 @@ const projects = [
         {projects.map((p,i) => <article class="showcase-card" data-slide={i} role="group" aria-roledescription="diapositiva" aria-label={`${i + 1} de ${projects.length}: ${p.title}`}>
           <div class="showcase-content">
           <div class:list={['showcase-art', {'two-shots': p.gallery.length > 1}]}>
-            {p.gallery.slice(0,2).map((shot, index) => <figure class={`showcase-shot shot-${index}`}><ProjectImage src={shot.src} alt={shot.alt} sizes="(max-width: 760px) calc(100vw - 144px), (max-width: 1100px) calc(100vw - 240px), 540px" /></figure>)}
+            {p.gallery.slice(0,2).map((shot, index) => <figure class={`showcase-shot shot-${index}`}><ProjectImage src={shot.src} alt={shot.alt} sizes="(max-width: 760px) calc(100vw - 64px), (max-width: 1100px) calc(100vw - 240px), 540px" /></figure>)}
           </div>
           <div class="showcase-copy">
             <p class="eyebrow">{p.category}</p>
@@ -43,15 +43,15 @@ const projects = [
 </section>
 <style>
   project-showcase { display: block; min-width: 0; position: relative; }
-  .project-viewport { position: relative; overflow: hidden; border-radius: var(--radius); }
+  .project-viewport { position: relative; overflow: hidden; }
   @media (min-width: 1101px) {
     project-showcase { width: 105%; margin-inline: -2.5%; }
     .project-track { min-height: var(--desktop-card-height, auto); }
   }
-  .project-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; border-radius: var(--radius); }
-  .showcase-card { flex: 0 0 100%; min-width: 0; display: flex; align-items: center; scroll-snap-align: start; scroll-snap-stop: always; border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(135deg, #ffffff07, #ffffff02); overflow: hidden; }
+  .project-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .showcase-card { flex: 0 0 100%; min-width: 0; display: flex; align-items: center; scroll-snap-align: start; scroll-snap-stop: always; border: 0; border-radius: 0; background: transparent; overflow: hidden; }
   .showcase-content { width: 100%; min-width: 0; display: grid; grid-template-columns: 1.05fr 1fr; }
-  .showcase-art { min-width: 0; position: relative; display: flex; align-items: center; padding: 60px 33.6px; background: radial-gradient(ellipse at center, #3434344f, transparent 75%); }
+  .showcase-art { min-width: 0; position: relative; display: flex; align-items: center; padding: 60px 33.6px; }
   .showcase-shot { width: 100%; margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
   .showcase-shot :global(img) { width: 100%; height: clamp(350px, 43svh, 460px); object-fit: cover; object-position: top; background: #171717; }
   .two-shots .shot-0 { width: 90%; transform: translateY(-12px); }
@@ -69,15 +69,15 @@ const projects = [
   .project-button:hover { background: #fff; color: #171717; transform: translateY(-2px); }
   .project-controls { display: none; }
   project-showcase[data-ready] .project-controls { display: block; }
-  .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid #ffffff26; border-radius: 50%; background: #242424ed; color: var(--text); box-shadow: 0 8px 24px #0005; cursor: pointer; transition: background .2s, border-color .2s; }
-  .carousel-arrow:hover { background: #3a3a3a; border-color: #ffffff70; }
+  .carousel-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--muted); box-shadow: none; cursor: pointer; transition: color .2s; }
+  .carousel-arrow:hover { color: var(--text); }
   .carousel-arrow:focus-visible, .project-button:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
-  .previous { left: -24px; }
-  .next { right: -24px; }
-  @media (max-width: 1500px) {
-    .carousel-arrow { width: 44px; height: 44px; }
-    .previous { left: 10px; }
-    .next { right: 10px; }
+  .previous { left: -64px; }
+  .next { right: -64px; }
+  @media (min-width: 1101px) and (max-width: 1700px) {
+    project-showcase { padding-inline: 56px; }
+    .previous { left: 0; }
+    .next { right: 0; }
   }
   @media (max-width: 1100px) {
     .showcase-content { grid-template-columns: 1fr; }
@@ -85,7 +85,8 @@ const projects = [
     .showcase-shot :global(img) { height: clamp(260px, 38vw, 380px); }
     .showcase-copy { padding: 28px 32px 40px; }
     .two-shots .shot-1 { bottom: 16px; }
-    .carousel-arrow { top: 150px; transform: none; }
+    project-showcase[data-ready] .project-controls { display: flex; justify-content: space-between; margin-top: 28px; }
+    .carousel-arrow { position: static; transform: none; }
   }
   @media (max-width: 760px) {
     .showcase-content { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
@@ -102,7 +103,7 @@ const projects = [
     .screen-next { margin-top: 28px; }
     .showcase-links { margin-top: 28px; gap: 16px; }
     .project-button { width: 100%; padding-inline: 16px; }
-    .carousel-arrow { top: 120px; }
+
   }
   @media (prefers-reduced-motion: reduce) { .project-button, .carousel-arrow { transition: none; } .project-button:hover { transform: none; } }
 </style>

@@ -8,7 +8,7 @@ const items = [
 ];
 ---
 <header class="site-header">
-  <a class="brand" href={home ? '#inicio' : '/'} aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true">.</span></a>
+  <a class="brand" href={home ? '#inicio' : '/'} aria-label={`${profile.name}, inicio`}>{profile.brand}<span aria-hidden="true"></span></a>
   <nav class="navigation" aria-label="Navegación principal">
     <div class="nav-links">
       {items.map(item => <a href={home ? `#${item.id}` : `/#${item.id}`} data-screen={home ? item.id : undefined} aria-label={item.label} title={item.label} aria-current={home && item.id === 'inicio' ? 'location' : undefined}>
